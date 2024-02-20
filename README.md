@@ -1,5 +1,5 @@
 # Senior_Design-
-This is an application to support our senior design project. We are building a system system capable of seamlessly acquiring, processing, and analyzing satellite imagery from various orbits, including low earth, geosynchronous, and polar orbits. This application is build using the Qt Framework (C++). 
+This is an application to support our senior design project. We are building a system system capable of seamlessly acquiring, processing, and analyzing satellite imagery from various orbits, including low earth, geosynchronous, and polar orbits. This application is built using the Qt Framework (C++). 
 
 # Qt Information
 This is an open source C++ framwork capable of building full stack desktop applications. 
