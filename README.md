@@ -3,7 +3,7 @@ This is an application to support our senior design project. We are building a s
 
 # Qt Information
 This is an open source C++ framwork capable of building full stack desktop applications. 
-[Qt Download] (https://www.qt.io/download-open-source) 
+[Qt Download](https://www.qt.io/download-open-source) 
 
 If you do not already have a C++ compiler installed on your system you can select one within the Qt installer. 
 
