@@ -42,9 +42,9 @@ QLabel
 QLabel#application_title {
     font-size: 24px; /* Set the font size to 24 pixels */
     font-weight: bold; /* Make the font bold */
-    color: #333333; /* Set the text color to a dark shade of gray */
-    padding: 10px; /* Add some padding around the text */
-    background-color: #FFFFFF; /* Set the background color to white */
+    color: #607cff; /* Set the text color to a dark shade of gray */
+    padding: 3px; /* Add some padding around the text */
+    background-color: #242424; /* Set the background color to white */
     border: 2px solid #CCCCCC; /* Add a 2-pixel solid border with a light gray color */
     border-radius: 5px; /* Add rounded corners with a radius of 5 pixels */
 }

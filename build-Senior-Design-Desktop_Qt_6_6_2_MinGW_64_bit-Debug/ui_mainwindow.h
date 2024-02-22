@@ -123,7 +123,7 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
-        application_title->setText(QCoreApplication::translate("MainWindow", "Ctrl Alt Delete", nullptr));
+        application_title->setText(QCoreApplication::translate("MainWindow", "InteliTrack", nullptr));
 #if QT_CONFIG(tooltip)
         internet_widget->setToolTip(QString());
 #endif // QT_CONFIG(tooltip)

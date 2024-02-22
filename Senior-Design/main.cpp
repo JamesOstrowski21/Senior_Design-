@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     //Set style sheet
-    QFile styleSheet("E:/Senior-Design/Senior_Design-/Senior-Design/Darkeum/Darkeum.qss");
+    QFile styleSheet("E:/Senior-Design/Senior_Design-/Senior-Design/Darkeum.qss");
     styleSheet.open(QFile::ReadOnly);
     QString style = QLatin1String(styleSheet.readAll());
     a.setStyleSheet(style);
