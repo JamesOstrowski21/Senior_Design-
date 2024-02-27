@@ -10,12 +10,21 @@ This is an open source C++ framwork capable of building full stack desktop appli
 2. This is a link to a video that you can follow for selecting install options [Installation Video](https://www.youtube.com/watch?v=Aw7gozXQE4c&t=264s). Use this video for selecting options. 
 *** MAKE SURE YOU SELECT Qt 6.6.2 and MinGW 11.2.0 ***
 
-Git Cloning 
+# Git Cloning 
 *** DO NOT WORK OFF OF MAIN ***
 
 ```sh
 git clone https://github.com/JamesOstrowski21/Senior_Design-.git
 cd Senior-Design-
 git checkout -b <branch_name>
-
+git submodule update --init --recursive
 ```
+
+# Git Commit/Push
+
+```sh
+git add .
+git commit -m "<your message>"
+git push
+```
+
