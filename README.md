@@ -5,9 +5,17 @@ This is an application to support our senior design project. We are building a s
 This is an open source C++ framwork capable of building full stack desktop applications. 
 [Qt Download](https://www.qt.io/download-open-source) 
 
-If you do not already have a C++ compiler installed on your system you can select one within the Qt installer. 
+# Qt Installation
+1. Download the installer here [Qt Installer](https://www.qt.io/download-qt-installer-oss?hsCtaTracking=99d9dd4f-5681-48d2-b096-470725510d34%7C074ddad0-fdef-4e53-8aa8-5e8a876d6ab4)
+2. This is a link to a video that you can follow for selecting install options [Installation Video](https://www.youtube.com/watch?v=Aw7gozXQE4c&t=264s). Use this video for selecting options. 
+*** MAKE SURE YOU SELECT Qt 6.6.2 and MinGW 11.2.0 ***
+
+Git Cloning 
+*** DO NOT WORK OFF OF MAIN ***
 
 ```sh
-any terminal commands will go here. 
+git clone https://github.com/JamesOstrowski21/Senior_Design-.git
+cd Senior-Design-
+git checkout -b <branch_name>
 
 ```
