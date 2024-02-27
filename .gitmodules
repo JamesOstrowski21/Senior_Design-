@@ -1,0 +1,3 @@
+[submodule "intelliTrack"]
+	path = intelliTrack
+	url = https://github.com/KaiLindholm/intelliTrack.git
