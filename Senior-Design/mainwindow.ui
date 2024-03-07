@@ -1221,6 +1221,34 @@ QStatusBar
          <enum>QFrame::Raised</enum>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QTabWidget" name="tabWidget">
+           <property name="minimumSize">
+            <size>
+             <width>800</width>
+             <height>60</height>
+            </size>
+           </property>
+           <property name="currentIndex">
+            <number>0</number>
+           </property>
+           <widget class="QWidget" name="decode_page">
+            <attribute name="title">
+             <string>Decode</string>
+            </attribute>
+           </widget>
+           <widget class="QWidget" name="location_page">
+            <attribute name="title">
+             <string>Scheduler</string>
+            </attribute>
+           </widget>
+           <widget class="QWidget" name="automation_page">
+            <attribute name="title">
+             <string>View Images</string>
+            </attribute>
+           </widget>
+          </widget>
+         </item>
          <item alignment="Qt::AlignLeft|Qt::AlignVCenter">
           <widget class="QLabel" name="application_title">
            <property name="minimumSize">
@@ -1275,47 +1303,6 @@ QStatusBar
           </widget>
          </item>
         </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QTabWidget" name="tabWidget">
-        <property name="minimumSize">
-         <size>
-          <width>800</width>
-          <height>60</height>
-         </size>
-        </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <widget class="QWidget" name="decode_page">
-         <attribute name="title">
-          <string>Decode</string>
-         </attribute>
-         <widget class="QRadioButton" name="radioButton">
-          <property name="geometry">
-           <rect>
-            <x>150</x>
-            <y>110</y>
-            <width>100</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>RadioButton</string>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QWidget" name="location_page">
-         <attribute name="title">
-          <string>Location</string>
-         </attribute>
-        </widget>
-        <widget class="QWidget" name="automation_page">
-         <attribute name="title">
-          <string>Automation/Scheduling</string>
-         </attribute>
-        </widget>
        </widget>
       </item>
      </layout>
