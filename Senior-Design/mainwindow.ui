@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1200</width>
-    <height>750</height>
+    <height>812</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -1292,6 +1292,19 @@ QStatusBar
          <attribute name="title">
           <string>Decode</string>
          </attribute>
+         <widget class="QRadioButton" name="radioButton">
+          <property name="geometry">
+           <rect>
+            <x>150</x>
+            <y>110</y>
+            <width>100</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>RadioButton</string>
+          </property>
+         </widget>
         </widget>
         <widget class="QWidget" name="location_page">
          <attribute name="title">
