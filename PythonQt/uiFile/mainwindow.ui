@@ -533,8 +533,8 @@ QCheckBox::indicator
 
 QCheckBox::indicator:checked
 {
-    image:url(://checkbox.png);
-    border: 1px solid #607cff;
+	background-color: #607cff;
+    border: 1px solid #323232;
 
 }
 
@@ -1458,6 +1458,9 @@ QStatusBar
                    </property>
                    <property name="text">
                     <string>Example</string>
+                   </property>
+                   <property name="checked">
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>
