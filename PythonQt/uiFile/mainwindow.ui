@@ -1356,7 +1356,7 @@ QStatusBar
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="decode_button">
                 <property name="minimumSize">
                  <size>
                   <width>180</width>
