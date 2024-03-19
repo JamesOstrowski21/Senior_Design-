@@ -48,6 +48,10 @@ QLabel#application_title {
     padding: 3px; /* Add some padding around the text */
     background-color: #121212; /* Set the background color to white */
 }
+QLabel#post_processing_label {
+    color: #607cff; /* Set the text color to a dark shade of gray */
+}
+
 QLabel#internet_text{
 	font-size: 12px;
 	font-weight: bold;
@@ -529,8 +533,8 @@ QCheckBox::indicator
 
 QCheckBox::indicator:checked
 {
-    image:url(://checkbox.png);
-    border: 1px solid #607cff;
+	background-color: #607cff;
+    border: 1px solid #323232;
 
 }
 
@@ -1230,48 +1234,8 @@ QStatusBar
             </size>
            </property>
            <property name="text">
-            <string>InteliTrack</string>
+            <string>IntelliTrack</string>
            </property>
-          </widget>
-         </item>
-         <item alignment="Qt::AlignHCenter">
-          <widget class="QWidget" name="internet_widget" native="true">
-           <property name="minimumSize">
-            <size>
-             <width>130</width>
-             <height>35</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>200</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string extracomment="This is your internet status (Green) = good, (Red) = no connection"/>
-           </property>
-           <layout class="QGridLayout" name="gridLayout">
-            <item row="0" column="0">
-             <widget class="QLabel" name="internet_text">
-              <property name="minimumSize">
-               <size>
-                <width>115</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>110</width>
-                <height>50</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Internet Connection</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </widget>
          </item>
         </layout>
@@ -1292,15 +1256,402 @@ QStatusBar
          <attribute name="title">
           <string>Decode</string>
          </attribute>
+         <widget class="QFrame" name="import_decode_frame">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>270</width>
+            <height>580</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>270</width>
+            <height>580</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>270</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QFrame" name="import_frame">
+             <property name="minimumSize">
+              <size>
+               <width>240</width>
+               <height>80</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QPushButton" name="file_import_button">
+                <property name="minimumSize">
+                 <size>
+                  <width>80</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>80</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Import File</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="file_type_label">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>ex. image1.wav</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="decode_button_frame">
+             <property name="minimumSize">
+              <size>
+               <width>240</width>
+               <height>80</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+               <widget class="QPushButton" name="decode_button">
+                <property name="minimumSize">
+                 <size>
+                  <width>180</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>180</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>DECODE</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="post_processing_frame">
+             <property name="minimumSize">
+              <size>
+               <width>240</width>
+               <height>310</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <item>
+               <widget class="QLabel" name="post_processing_label">
+                <property name="minimumSize">
+                 <size>
+                  <width>240</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>240</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>16</pointsize>
+                  <bold>true</bold>
+                  <underline>false</underline>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Post Processing</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QFrame" name="processing_checkbox_frame">
+                <property name="minimumSize">
+                 <size>
+                  <width>240</width>
+                  <height>200</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_6">
+                 <item>
+                  <widget class="QCheckBox" name="checkbox_1">
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Example</string>
+                   </property>
+                   <property name="checked">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="checkbox_2">
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Example 2</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="checkbox_3">
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Infrared </string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="checkbox_none">
+                   <property name="minimumSize">
+                    <size>
+                     <width>100</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>None</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QFrame" name="play_audio_frame">
+          <property name="geometry">
+           <rect>
+            <x>290</x>
+            <y>9</y>
+            <width>870</width>
+            <height>140</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>870</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QFrame" name="frame">
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>110</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>150</width>
+               <height>110</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+               <widget class="QPushButton" name="play_audio_button">
+                <property name="minimumSize">
+                 <size>
+                  <width>75</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>60</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Play Audio</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="waveform_widget" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>680</width>
+               <height>110</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QFrame" name="spectogram_frame">
+          <property name="geometry">
+           <rect>
+            <x>290</x>
+            <y>160</y>
+            <width>871</width>
+            <height>141</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>870</width>
+            <height>141</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
+         <widget class="QFrame" name="image_frame">
+          <property name="geometry">
+           <rect>
+            <x>290</x>
+            <y>320</y>
+            <width>871</width>
+            <height>261</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>870</width>
+            <height>260</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
         </widget>
-        <widget class="QWidget" name="location_page">
+        <widget class="QWidget" name="scheduling_page">
          <attribute name="title">
-          <string>Location</string>
+          <string>Scheduler</string>
          </attribute>
         </widget>
-        <widget class="QWidget" name="automation_page">
+        <widget class="QWidget" name="images_page">
          <attribute name="title">
-          <string>Automation/Scheduling</string>
+          <string>Images</string>
+         </attribute>
+        </widget>
+        <widget class="QWidget" name="settings_page">
+         <attribute name="title">
+          <string>Settings</string>
          </attribute>
         </widget>
        </widget>
