@@ -4,6 +4,7 @@ from PySide6.QtUiTools import QUiLoader
 from PySide6.QtGui import QColor, QPainter
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 import os
+import paramiko
 
 
 loader = QUiLoader()
@@ -30,6 +31,12 @@ class UserInterface(QtCore.QObject):
 
         self.ui.play_audio_button.clicked.connect(self.playAudio(self.filepath))
 
+        self.ip = self.ui.ip_input.text()
+        self.user = self.ui.username_input.text()
+        self.password = self.ui.password_input.text()
+
+        self.ui.pi_connect_button.clicked.connect(self.connectSSH)
+
 
     @QtCore.Slot()
     def openWavFile(self):
@@ -54,6 +61,28 @@ class UserInterface(QtCore.QObject):
         self.mediaPlayer.setSource(QtCore.QUrl.fromLocalFile(file_path))
         self.audioOutput.setVolume(0.03)
         self.mediaPlayer.play()
+    
+    def connectSSH(self):
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+        try:
+            ssh.connect('192.168.4.132', 22, 'jameso', '@Ski2024')
+            stdin, stdout, stderr = ssh.exec_command('ls')
+            x = stdout.read().decode()
+            print(x)
+            self.ui.terminal_text.setText(x)
+            ssh.close()
+        except paramiko.AuthenticationException:
+            print("Authentication failed")
+            self.ui.terminal_text.setText("Authentication failed")
+        except paramiko.SSHException as sshException:
+            print("Could not establish SSH connection: %s" % sshException)
+            self.ui.terminal_text.setText("Could not establish SSH connection: %s" % sshException)
+        except Exception as e:
+            print("An error has occured:", e)
+            self.ui.terminal_text.setText("An error has occured")
+        return 
 
     def show(self):
         self.ui.show()
