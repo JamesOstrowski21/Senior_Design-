@@ -37,6 +37,7 @@ class UserInterface(QtCore.QObject):
 
         self.ui.pi_initialize_button.setEnabled(False)
         self.ui.terminal_action_frame.setEnabled(False)
+        self.ui.terminal_text.setReadOnly(True)
         self.ip = self.ui.ip_input.text()
         self.user = self.ui.username_input.text()
         self.password = self.ui.password_input.text()
@@ -76,7 +77,7 @@ class UserInterface(QtCore.QObject):
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         try:
-            self.ssh.connect('192.168.4.132', 22, 'jameso', '@Ski2024')
+            self.ssh.connect(self.ip, 22, self.user, self.password)
             self.channel = self.ssh.invoke_shell()
         except paramiko.AuthenticationException:
             print("Authentication failed")
