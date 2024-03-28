@@ -38,9 +38,6 @@ class UserInterface(QtCore.QObject):
         self.ui.pi_initialize_button.setEnabled(False)
         self.ui.terminal_action_frame.setEnabled(False)
         self.ui.terminal_text.setReadOnly(True)
-        self.ip = self.ui.ip_input.text()
-        self.user = self.ui.username_input.text()
-        self.password = self.ui.password_input.text()
 
         self.ui.pi_connect_button.clicked.connect(self.connectSSH)
         
@@ -75,10 +72,19 @@ class UserInterface(QtCore.QObject):
     def connectSSH(self):
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
+        self.ip = self.ui.ip_input.text()
+        self.user = self.ui.username_input.text()
+        self.password = self.ui.password_input.text()
         try:
             self.ssh.connect(self.ip, 22, self.user, self.password)
             self.channel = self.ssh.invoke_shell()
+            if self.ssh:
+                self.ui.pi_initialize_button.setEnabled(True)
+                self.ui.terminal_action_frame.setEnabled(True)
+                self.runCommand(' ')
+                text = self.ui.terminal_text.toPlainText()
+                self.ui.terminal_text.setText(text[:-24])
+                self.ui.pi_connect_button.setEnabled(False)
         except paramiko.AuthenticationException:
             print("Authentication failed")
             self.ui.terminal_text.setText("Authentication failed")
@@ -88,14 +94,6 @@ class UserInterface(QtCore.QObject):
         except Exception as e:
             print("An error has occured:", e)
             self.ui.terminal_text.setText("An error has occured")
-
-        if self.ssh:
-            self.ui.pi_initialize_button.setEnabled(True)
-            self.ui.terminal_action_frame.setEnabled(True)
-            self.runCommand(' ')
-            # text = self.ui.terminal_text.toPlainText()
-            # self.ui.terminal_text.setText(text[:-24])
-            self.ui.pi_connect_button.setEnabled(False)
     
     def runCommand(self, command):
         if self.channel:
