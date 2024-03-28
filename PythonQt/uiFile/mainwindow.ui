@@ -478,9 +478,15 @@ QLineEdit::disabled
 /*-----QTextEdit-----*/
 QTextEdit
 {
-	background-color: #ffffff;
-	color: #010201;
+	background-color: #525251;
+    font-size: 14px;
+    font-weight: bold;
+	color: #ffffff;
+	border-width: 1px;
+	border-radius: 3px;
 	border-color: #051a39;
+	padding: 2px;
+ 	font-family: Consolas, Courier New, monospace;
 
 }
 
@@ -1889,7 +1895,7 @@ QStatusBar
                <string>Connect</string>
               </property>
              </widget>
-             <widget class="QPushButton" name="pi_initialize_buttion">
+             <widget class="QPushButton" name="pi_initialize_button">
               <property name="geometry">
                <rect>
                 <x>150</x>
@@ -1985,7 +1991,7 @@ QStatusBar
              <string>Enter</string>
             </property>
            </widget>
-           <widget class="QPushButton" name="terminal_clear_button">
+           <widget class="QPushButton" name="terminal_close_button">
             <property name="geometry">
              <rect>
               <x>580</x>
@@ -1995,7 +2001,7 @@ QStatusBar
              </rect>
             </property>
             <property name="text">
-             <string>Clear</string>
+             <string>Close</string>
             </property>
            </widget>
           </widget>
