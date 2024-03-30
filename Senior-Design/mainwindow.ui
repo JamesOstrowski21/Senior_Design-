@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1200</width>
-    <height>750</height>
+    <height>812</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -1218,62 +1218,157 @@ QStatusBar
      </widget>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QFrame" name="application_header">
-        <property name="minimumSize">
-         <size>
-          <width>800</width>
-          <height>60</height>
-         </size>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>800</width>
+        <height>60</height>
+       </size>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="decode_page">
+       <attribute name="title">
+        <string>Decode</string>
+       </attribute>
+       <widget class="QPushButton" name="pushButton">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>110</y>
+          <width>301</width>
+          <height>41</height>
+         </rect>
         </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
+        <property name="text">
+         <string>File Input</string>
         </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QTabWidget" name="tabWidget">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>800</width>
-             <height>60</height>
-            </size>
-           </property>
-           <property name="currentIndex">
-            <number>3</number>
-           </property>
-           <widget class="QWidget" name="decode_page">
-            <attribute name="title">
-             <string>Decode</string>
-            </attribute>
-           </widget>
-           <widget class="QWidget" name="location_page">
-            <attribute name="title">
-             <string>Scheduler</string>
-            </attribute>
-           </widget>
-           <widget class="QWidget" name="automation_page">
-            <attribute name="title">
-             <string>View Images</string>
-            </attribute>
-           </widget>
-           <widget class="QWidget" name="settings_page">
-            <attribute name="title">
-             <string>Settings</string>
-            </attribute>
-           </widget>
-          </widget>
-         </item>
-        </layout>
        </widget>
-      </item>
-     </layout>
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>150</y>
+          <width>113</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Error...</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_3">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>200</y>
+          <width>301</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Post Processing</string>
+        </property>
+       </widget>
+       <widget class="QListView" name="listView">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>240</y>
+          <width>301</width>
+          <height>192</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>321</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Decoder</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_4">
+        <property name="geometry">
+         <rect>
+          <x>450</x>
+          <y>40</y>
+          <width>621</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Play Audio File</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="lineEdit_3">
+        <property name="geometry">
+         <rect>
+          <x>450</x>
+          <y>130</y>
+          <width>621</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Spectrogram</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>449</x>
+          <y>225</y>
+          <width>621</width>
+          <height>341</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Image</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>490</y>
+          <width>321</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Decode</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="location_page">
+       <attribute name="title">
+        <string>Scheduler</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="automation_page">
+       <attribute name="title">
+        <string>View Images</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="settings_page">
+       <attribute name="title">
+        <string>Settings</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout"/>
     </item>
    </layout>
   </widget>
