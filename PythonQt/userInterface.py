@@ -40,6 +40,7 @@ class UserInterface(QtCore.QObject):
         self.ui.terminal_text.setReadOnly(True)
 
         self.ui.pi_connect_button.clicked.connect(self.connectSSH)
+        self.ui.pi_initialize_button.clicked.connect(self.initializePi)
         
         self.ui.terminal_input.returnPressed.connect(lambda: self.runCommand(self.ui.terminal_input.text()))
         self.ui.terminal_enter_button.clicked.connect(lambda: self.runCommand(self.ui.terminal_input.text()))
@@ -138,6 +139,8 @@ class UserInterface(QtCore.QObject):
         self.ui.pi_connect_button.setEnabled(True)
         self.ui.pi_initialize_button.setEnabled(False)
         self.ssh.close()
-
+    
+    def initializePi(self):
+        self.runCommand("sudo apt-get update")
     def show(self):
         self.ui.show()
