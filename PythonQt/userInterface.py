@@ -7,6 +7,7 @@ import os
 import paramiko
 import re
 import time
+import functions
 
 
 loader = QUiLoader()
@@ -141,6 +142,18 @@ class UserInterface(QtCore.QObject):
         self.ssh.close()
     
     def initializePi(self):
-        self.runCommand("sudo apt-get update")
+        # self.runCommand('sudo apt-get update && sudo apt-get upgrade -y')
+        # self.runCommand(f'{self.password}')
+        # self.runCommand("sudo apt-get install git cmake libusb-dev libusb-1.0-0-dev build-essential && git clone https://github.com/rxseger/rx_tools.git && \
+        #                 cd rx_tools && mkdir build && cd build && cmake ../ && make && sudo make install && \
+        #                 rx_fm_demod -h && sudo apt-get install vsftpd && sudo systemctl start vsftpd && \
+        #                 sudo systemctl enable vsftpd && sudo systemctl status vsftpd")
+        # self.runCommand("mkdir images")
+        #self.runCommand("cd images && mkdir NOAA15 && mkdir NOAA18 && mkdir NOAA19")
+        functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/images/NOAA15", "NOAA15")
+        functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/images/NOAA18", "NOAA18")
+        functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/images/NOAA19", "NOAA19")
+        
+
     def show(self):
         self.ui.show()

@@ -12,8 +12,7 @@ Ensure PI is turned on and connected to wifi or ethernet and ssh is enabled.
 ```sh
 sudo apt-get update && sudo apt-get upgrade -y
 sudo apt-get install git cmake libusb-dev libusb-1.0-0-dev build-essential
-sudo apt install soapysdr
-git clone htps://github.com/rxseger/rx_tools.git
+git clone https://github.com/rxseger/rx_tools.git
 cd rx_tools
 mkdir build
 cd build
