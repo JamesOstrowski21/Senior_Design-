@@ -6,7 +6,6 @@ def ftp_connect(host, user, passwd, filepath, folder):
     ftp.login(user, passwd)
     ftp.cwd(filepath)
     fileList = ftp.nlst()
-    # localpath = os.path.join(os.getcwd(), folder, filename)
     os.makedirs(os.path.join(os.getcwd(),"images", folder), exist_ok=True)
 
     for filename in fileList:
