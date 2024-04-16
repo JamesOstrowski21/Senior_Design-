@@ -24,4 +24,11 @@ sudo apt-get install vsftpd
 sudo systmect1 start vsftpd
 sudo systemct1 enable vsftpd
 sudo systemct1 status vsftpd
+mkdir -p intelliTrack
+cd intelliTrack
+mkdir -p images
+cd images
+mkdir -p NOAA15
+mdkir -p NOAA18
+mdkir -p NOAA19
 ```

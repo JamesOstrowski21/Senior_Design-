@@ -16,6 +16,7 @@ class UserInterface(QtCore.QObject):
     def __init__(self):
         super().__init__()
         self.filepath = ""
+        self.localpath = ""
         self.ui = loader.load("uiFile/mainwindow.ui", None)
         self.ui.setWindowTitle("intelliTrack")
 
@@ -42,11 +43,16 @@ class UserInterface(QtCore.QObject):
 
         self.ui.pi_connect_button.clicked.connect(self.connectSSH)
         self.ui.pi_initialize_button.clicked.connect(self.initializePi)
+        self.ui.refresh_images_button.clicked.connect(self.refreshImages)
+        self.ui.images_path_text.returnPressed.connect(self.refreshImages)
+
+        self.ui.terminal_text.setReadOnly(True)
         
         self.ui.terminal_input.returnPressed.connect(lambda: self.runCommand(self.ui.terminal_input.text()))
         self.ui.terminal_enter_button.clicked.connect(lambda: self.runCommand(self.ui.terminal_input.text()))
         self.ui.terminal_close_button.clicked.connect(self.closeTerminal)
 
+        self.loadCongif()
     @QtCore.Slot()
     def openWavFile(self):
         options = QFileDialog.Options()
@@ -66,7 +72,6 @@ class UserInterface(QtCore.QObject):
             self.ui.decode_button.setEnabled(False)
 
     def playAudio(self, file_path):
-        print(file_path)
         self.mediaPlayer.setSource(QtCore.QUrl.fromLocalFile(file_path))
         self.audioOutput.setVolume(0.03)
         self.mediaPlayer.play()
@@ -87,6 +92,7 @@ class UserInterface(QtCore.QObject):
                 text = self.ui.terminal_text.toPlainText()
                 self.ui.terminal_text.setText(text[:-24])
                 self.ui.pi_connect_button.setEnabled(False)
+                self.updateConfig()
         except paramiko.AuthenticationException:
             print("Authentication failed")
             self.ui.terminal_text.setText("Authentication failed")
@@ -142,18 +148,36 @@ class UserInterface(QtCore.QObject):
         self.ssh.close()
     
     def initializePi(self):
-        # self.runCommand('sudo apt-get update && sudo apt-get upgrade -y')
-        # self.runCommand(f'{self.password}')
-        # self.runCommand("sudo apt-get install git cmake libusb-dev libusb-1.0-0-dev build-essential && git clone https://github.com/rxseger/rx_tools.git && \
-        #                 cd rx_tools && mkdir build && cd build && cmake ../ && make && sudo make install && \
-        #                 rx_fm_demod -h && sudo apt-get install vsftpd && sudo systemctl start vsftpd && \
-        #                 sudo systemctl enable vsftpd && sudo systemctl status vsftpd")
-        # self.runCommand("mkdir images")
-        #self.runCommand("cd images && mkdir NOAA15 && mkdir NOAA18 && mkdir NOAA19")
-        functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/images/NOAA15", "NOAA15")
-        functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/images/NOAA18", "NOAA18")
-        functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/images/NOAA19", "NOAA19")
-        
+        self.runCommand('sudo apt-get update && sudo apt-get upgrade -y')
+        self.runCommand(f'{self.password}')
+        self.runCommand("sudo apt-get install git cmake libusb-dev libusb-1.0-0-dev build-essential && git clone https://github.com/rxseger/rx_tools.git && \
+                        cd rx_tools && mkdir -p build && cd build && cmake ../ && make && sudo make install && \
+                        rx_fm_demod -h && sudo apt-get install vsftpd && sudo systemctl start vsftpd && \
+                        sudo systemctl enable vsftpd && sudo systemctl status vsftpd")
+        self.runCommand("mkdir -p intelliTrack")
+        self.runCommand("cd intelliTrack")
+        self.runCommand("mkdir -p images")
+        self.runCommand("cd images && mkdir -p NOAA15 && mkdir -p NOAA18 && mkdir -p NOAA19")
+        self.localpath = os.path.join(os.getcwd(), "images")
+        self.updateConfig()
+        self.loadCongif()
+
+    def refreshImages(self):
+        self.localpath = self.ui.images_path_text.text()
+        functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/intelliTrack/images/NOAA15", "NOAA15", self.localpath)
+        functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/intelliTrack/images/NOAA18", "NOAA18", self.localpath)
+        functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/intelliTrack/images/NOAA19", "NOAA19", self.localpath)
+        self.updateConfig()
+
+    def updateConfig(self):
+        functions.updateConfigFile(self.localpath, self.ip, self.user, self.password)
+
+    def loadCongif(self):
+        path, ip, name, password = functions.loadConfigFile()
+        self.ui.images_path_text.setText(path)
+        self.ui.ip_input.setText(ip)
+        self.ui.username_input.setText(name)
+        self.ui.password_input.setText(password)
 
     def show(self):
         self.ui.show()
