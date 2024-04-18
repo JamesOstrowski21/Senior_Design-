@@ -1,5 +1,6 @@
 from ftplib import FTP
 import os
+import requests
 
 def ftp_connect(host, user, passwd, filepath, folder, localpath):
     ftp = FTP(host)
@@ -40,3 +41,10 @@ def loadConfigFile():
     except Exception as e:
         print(e)
         return None
+    
+def checkInternetConnection():
+    try:
+        requests.get("http://www.google.com", timeout=5)
+        return True
+    except requests.ConnectionError:
+        return False

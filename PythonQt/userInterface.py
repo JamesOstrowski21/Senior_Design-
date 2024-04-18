@@ -35,10 +35,19 @@ class UserInterface(QtCore.QObject):
         self.ssh = None
         self.channel = None
 
+        self.ui.ip_input.textChanged.connect(self.checkEnable)
+        self.ui.username_input.textChanged.connect(self.checkEnable)
+        self.ui.password_input.textChanged.connect(self.checkEnable)
+
         self.ui.play_audio_button.clicked.connect(lambda: self.playAudio(self.filepath))
 
         self.ui.pi_initialize_button.setEnabled(False)
         self.ui.terminal_action_frame.setEnabled(False)
+        self.ui.imagePathFrame.setEnabled(False)
+        self.ui.pi_connect_button.setEnabled(False)
+        self.ui.scheduling_page.setEnabled(False)
+        self.ui.images_page.setEnabled(False)
+        self.ui.settings_page.setEnabled(False)
         self.ui.terminal_text.setReadOnly(True)
 
         self.ui.pi_connect_button.clicked.connect(self.connectSSH)
@@ -52,6 +61,7 @@ class UserInterface(QtCore.QObject):
         self.ui.terminal_enter_button.clicked.connect(lambda: self.runCommand(self.ui.terminal_input.text()))
         self.ui.terminal_close_button.clicked.connect(self.closeTerminal)
 
+        self.checkInternetConnection()
         self.loadCongif()
     @QtCore.Slot()
     def openWavFile(self):
@@ -92,6 +102,7 @@ class UserInterface(QtCore.QObject):
                 text = self.ui.terminal_text.toPlainText()
                 self.ui.terminal_text.setText(text[:-24])
                 self.ui.pi_connect_button.setEnabled(False)
+                self.ui.imagePathFrame.setEnabled(True)
                 self.updateConfig()
         except paramiko.AuthenticationException:
             print("Authentication failed")
@@ -158,7 +169,7 @@ class UserInterface(QtCore.QObject):
         self.runCommand("cd intelliTrack")
         self.runCommand("mkdir -p images")
         self.runCommand("cd images && mkdir -p NOAA15 && mkdir -p NOAA18 && mkdir -p NOAA19")
-        self.localpath = os.path.join(os.getcwd(), "images")
+        self.localpath = os.getcwd()
         self.updateConfig()
         self.loadCongif()
 
@@ -179,5 +190,14 @@ class UserInterface(QtCore.QObject):
         self.ui.username_input.setText(name)
         self.ui.password_input.setText(password)
 
+    def checkEnable(self):
+        if self.ui.ip_input.text() and self.ui.username_input.text() and self.ui.password_input.text():
+            self.ui.pi_connect_button.setEnabled(True)
+
+    def checkInternetConnection(self):
+        if functions.checkInternetConnection():
+            self.ui.scheduling_page.setEnabled(True)
+            self.ui.images_page.setEnabled(True)
+            self.ui.settings_page.setEnabled(True)
     def show(self):
         self.ui.show()
