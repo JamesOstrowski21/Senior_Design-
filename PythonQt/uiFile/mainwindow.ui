@@ -1449,7 +1449,7 @@ QStatusBar
                </widget>
               </item>
               <item>
-               <widget class="QSlider" name="horizontalSlider">
+               <widget class="QSlider" name="audio_slider">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>

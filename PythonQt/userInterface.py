@@ -24,6 +24,9 @@ class UserInterface(QtCore.QObject):
         self.ui.decode_button.setEnabled(False)
         self.ui.play_audio_button.setEnabled(False)
 
+        self.ui.audio_slider.setRange(0, 100)
+        self.ui.audio_slider.setValue(50)
+        self.ui.audio_slider.valueChanged.connect(self.setVolume)
         
         self.checkboxes = [self.ui.checkbox_2, self.ui.checkbox_3, self.ui.checkbox_none]
         for checkbox in self.checkboxes:
@@ -98,7 +101,7 @@ class UserInterface(QtCore.QObject):
 
     def playAudio(self, file_path):
         self.mediaPlayer.setSource(QtCore.QUrl.fromLocalFile(file_path))
-        self.audioOutput.setVolume(0.03)
+        self.audioOutput.setVolume(self.ui.audio_slider.value()/1000.0)
         self.mediaPlayer.play()
         self.ui.play_audio_button.setEnabled(False)
         self.ui.pause_button.setEnabled(True)
@@ -107,6 +110,9 @@ class UserInterface(QtCore.QObject):
         self.mediaPlayer.pause()
         self.ui.pause_button.setEnabled(False)
         self.ui.play_audio_button.setEnabled(True)
+
+    def setVolume(self):
+        self.audioOutput.setVolume(self.ui.audio_slider.value()/1000.0)
     
     def connectSSH(self):
         self.ssh = paramiko.SSHClient()
