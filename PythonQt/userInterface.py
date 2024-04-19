@@ -25,9 +25,11 @@ class UserInterface(QtCore.QObject):
         self.ui.play_audio_button.setEnabled(False)
 
         
-        self.checkboxes = [self.ui.checkbox_1, self.ui.checkbox_2, self.ui.checkbox_3, self.ui.checkbox_none]
+        self.checkboxes = [self.ui.checkbox_2, self.ui.checkbox_3, self.ui.checkbox_none]
         for checkbox in self.checkboxes:
             checkbox.stateChanged.connect(self.updateDecodeButton)
+        
+        self.ui.checkbox_none.stateChanged.connect(self.updateBoxes)
 
         self.mediaPlayer = QMediaPlayer()
         self.audioOutput = QAudioOutput()
@@ -38,6 +40,7 @@ class UserInterface(QtCore.QObject):
         self.ui.ip_input.textChanged.connect(self.checkEnable)
         self.ui.username_input.textChanged.connect(self.checkEnable)
         self.ui.password_input.textChanged.connect(self.checkEnable)
+        self.ui.pause_button.clicked.connect(self.pauseAudio)
 
         self.ui.play_audio_button.clicked.connect(lambda: self.playAudio(self.filepath))
 
@@ -48,6 +51,7 @@ class UserInterface(QtCore.QObject):
         self.ui.scheduling_page.setEnabled(False)
         self.ui.images_page.setEnabled(False)
         self.ui.settings_page.setEnabled(False)
+        self.ui.pause_button.setEnabled(False)
         self.ui.terminal_text.setReadOnly(True)
 
         self.ui.pi_connect_button.clicked.connect(self.connectSSH)
@@ -72,7 +76,6 @@ class UserInterface(QtCore.QObject):
             self.updateDecodeButton()
             self.filepath = file_name
             self.ui.play_audio_button.setEnabled(True)
-            self.ui.play_audio_button.clicked.connect(self.playAudio(self.filepath))
 
     @QtCore.Slot()
     def updateDecodeButton(self):
@@ -81,10 +84,29 @@ class UserInterface(QtCore.QObject):
         else:
             self.ui.decode_button.setEnabled(False)
 
+    @QtCore.Slot()
+    def updateBoxes(self):
+        if self.ui.checkbox_none.isChecked():
+            self.ui.checkbox_2.setEnabled(False)
+            self.ui.checkbox_3.setEnabled(False)
+            self.ui.checkbox_2.setChecked(False)
+            self.ui.checkbox_3.setChecked(False)
+        elif self.ui.checkbox_none.isChecked() == False:
+            self.ui.checkbox_2.setEnabled(True)
+            self.ui.checkbox_3.setEnabled(True)
+
+
     def playAudio(self, file_path):
         self.mediaPlayer.setSource(QtCore.QUrl.fromLocalFile(file_path))
         self.audioOutput.setVolume(0.03)
         self.mediaPlayer.play()
+        self.ui.play_audio_button.setEnabled(False)
+        self.ui.pause_button.setEnabled(True)
+
+    def pauseAudio(self):
+        self.mediaPlayer.pause()
+        self.ui.pause_button.setEnabled(False)
+        self.ui.play_audio_button.setEnabled(True)
     
     def connectSSH(self):
         self.ssh = paramiko.SSHClient()

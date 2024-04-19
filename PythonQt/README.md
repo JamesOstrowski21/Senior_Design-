@@ -6,7 +6,7 @@ pip install ftplib
 ```
 
 ## Py Initialization
-Ensure PI is turned on and connected to wifi or ethernet and ssh is enabled. 
+Ensure PI is turned on with Raspberry PI OS installed and connected to wifi or ethernet and ssh is enabled. 
 
 ## Init Commands
 ```sh
