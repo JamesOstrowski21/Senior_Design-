@@ -1,12 +1,13 @@
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtWidgets import QFileDialog
+from PySide6.QtWidgets import QFileDialog, QVBoxLayout, QTreeWidgetItem, QMainWindow, QLabel
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtGui import QColor, QPainter
+from PySide6.QtGui import QColor, QPainter, QPixmap, QIcon
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 import os
 import paramiko
 import re
 import time
+import functions
 
 
 loader = QUiLoader()
@@ -15,17 +16,25 @@ class UserInterface(QtCore.QObject):
     def __init__(self):
         super().__init__()
         self.filepath = ""
+        self.localpath = ""
         self.ui = loader.load("uiFile/mainwindow.ui", None)
         self.ui.setWindowTitle("intelliTrack")
+        self.ui.full_size_window = None
 
+        self.ui.image_frame.setLayout(QVBoxLayout())
         self.ui.file_import_button.clicked.connect(self.openWavFile)
         self.ui.decode_button.setEnabled(False)
         self.ui.play_audio_button.setEnabled(False)
 
+        self.ui.audio_slider.setRange(0, 100)
+        self.ui.audio_slider.setValue(50)
+        self.ui.audio_slider.valueChanged.connect(self.setVolume)
         
-        self.checkboxes = [self.ui.checkbox_1, self.ui.checkbox_2, self.ui.checkbox_3, self.ui.checkbox_none]
+        self.checkboxes = [self.ui.checkbox_2, self.ui.checkbox_3, self.ui.checkbox_none]
         for checkbox in self.checkboxes:
             checkbox.stateChanged.connect(self.updateDecodeButton)
+        
+        self.ui.checkbox_none.stateChanged.connect(self.updateBoxes)
 
         self.mediaPlayer = QMediaPlayer()
         self.audioOutput = QAudioOutput()
@@ -33,17 +42,138 @@ class UserInterface(QtCore.QObject):
         self.ssh = None
         self.channel = None
 
+        self.ui.ip_input.textChanged.connect(self.checkEnable)
+        self.ui.username_input.textChanged.connect(self.checkEnable)
+        self.ui.password_input.textChanged.connect(self.checkEnable)
+        self.ui.pause_button.clicked.connect(self.pauseAudio)
+
         self.ui.play_audio_button.clicked.connect(lambda: self.playAudio(self.filepath))
 
         self.ui.pi_initialize_button.setEnabled(False)
         self.ui.terminal_action_frame.setEnabled(False)
+        self.ui.imagePathFrame.setEnabled(False)
+        self.ui.pi_connect_button.setEnabled(False)
+        self.ui.scheduling_page.setEnabled(False)
+        self.ui.images_page.setEnabled(False)
+        self.ui.settings_page.setEnabled(False)
+        self.ui.pause_button.setEnabled(False)
         self.ui.terminal_text.setReadOnly(True)
 
         self.ui.pi_connect_button.clicked.connect(self.connectSSH)
+        self.ui.pi_initialize_button.clicked.connect(self.initializePi)
+        self.ui.refresh_images_button.clicked.connect(self.refreshImages)
+        self.ui.images_path_text.returnPressed.connect(self.refreshImages)
+        self.ui.decode_button.clicked.connect(self.decodeImage)
+
+        self.ui.terminal_text.setReadOnly(True)
         
         self.ui.terminal_input.returnPressed.connect(lambda: self.runCommand(self.ui.terminal_input.text()))
         self.ui.terminal_enter_button.clicked.connect(lambda: self.runCommand(self.ui.terminal_input.text()))
         self.ui.terminal_close_button.clicked.connect(self.closeTerminal)
+
+        self.checkInternetConnection()
+        self.loadCongif()
+
+        ## Image Page
+        self.ui.image_structure.itemSelectionChanged.connect(self.updateImages)
+        self.ui.image_display.itemClicked.connect(self.fullSizeImage)
+        self.addRootItems()
+        
+
+    def addRootItems(self):
+        rootItem1 = QTreeWidgetItem(self.ui.image_structure, ["NOAA15"])
+        rootItem1.setIcon(0, QIcon(os.path.join(os.getcwd(), "resources/folderIcon.png")))
+        rootItem2 = QTreeWidgetItem(self.ui.image_structure, ["NOAA18"])
+        rootItem2.setIcon(0, QIcon(os.path.join(os.getcwd(), "resources/folderIcon.png")))
+        rootItem3 = QTreeWidgetItem(self.ui.image_structure, ["NOAA19"])
+        rootItem3.setIcon(0, QIcon(os.path.join(os.getcwd(), "resources/folderIcon.png")))
+
+    def updateImages(self):
+        selectedItem = self.ui.image_structure.currentItem()
+        folder = selectedItem.text(0)
+        folderPath = os.path.join(self.localpath, "images", folder)
+
+        self.clearImages()
+
+        imageFiles = [f for f in os.listdir(folderPath) if f.endswith(".png")]
+
+
+        for idx, image in enumerate(imageFiles):
+            pixmap = QPixmap(os.path.join(folderPath, image))
+            pixmap = pixmap.scaled(250, 300, QtCore.Qt.KeepAspectRatio)
+
+            # Create a QLabel widget to display the image
+            image_label = QtWidgets.QLabel()
+            image_label.setPixmap(pixmap)
+
+            # Create a QLabel widget to display the filename
+            filename_label = QtWidgets.QLabel(image)
+            filename_label.setAlignment(QtCore.Qt.AlignCenter)
+
+            # Create a QVBoxLayout to stack the image and filename labels vertically
+            layout = QtWidgets.QVBoxLayout()
+            layout.addWidget(image_label)
+            layout.addWidget(filename_label)
+            layout.setAlignment(QtCore.Qt.AlignCenter)
+
+            # Create a QWidget to hold the layout
+            widget = QtWidgets.QWidget()
+            widget.setLayout(layout)
+
+            # Add the QWidget to a QListWidgetItem
+            item = QtWidgets.QListWidgetItem()
+            item.setSizeHint(QtCore.QSize(280,300))
+            item.setText(f"{folder}/{image}")  # Set the size hint for the item
+            self.ui.image_display.addItem(item)
+            self.ui.image_display.setItemWidget(item, widget)
+
+        # Set the layout mode and resize mode of the QListWidget
+        self.ui.image_display.setLayoutMode(QtWidgets.QListView.SinglePass)
+        self.ui.image_display.setResizeMode(QtWidgets.QListView.Adjust)
+        self.ui.image_display.setViewMode(QtWidgets.QListView.IconMode)
+
+        scrollBar = self.ui.image_display.verticalScrollBar()
+        scrollBar.setSingleStep(10)
+        
+    def clearImages(self):
+            self.ui.image_display.clear()
+
+    def fullSizeImage(self, item):
+        # Get the text (filename) of the clicked item
+        filename = item.text()
+
+        # Create a new window to display the full-size image
+        self.full_size_window = QMainWindow()
+        self.full_size_window.setWindowTitle(filename)
+        self.full_size_window.setStyleSheet("QMainWindow { border: 10px solid black; }")
+        # Create a label to display the full-size image
+        full_size_label = QLabel()
+        pixmap = QPixmap(os.path.join(self.localpath, "images", filename))
+        full_size_label.setPixmap(pixmap)
+        full_size_label.setScaledContents(True)
+        # Set size policy for the label to "Ignored" to allow free resizing
+        full_size_label.setSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored)
+
+        # Create a vertical layout for the central widget and add the label
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(full_size_label)
+
+        # Create a widget to serve as the central widget and set the layout
+        central_widget = QtWidgets.QWidget()
+        central_widget.setLayout(layout)
+
+        # Set the central widget of the QMainWindow
+        self.full_size_window.setCentralWidget(central_widget)
+
+        # Resize the window to fit the image, with a maximum size limit
+        max_width = 800  # Set maximum width for the window
+        max_height = 600  # Set maximum height for the window
+        window_width = min(pixmap.width(), max_width)
+        window_height = min(pixmap.height(), max_height)
+        self.full_size_window.resize(window_width, window_height)
+
+        # Show the window
+        self.full_size_window.show()
 
     @QtCore.Slot()
     def openWavFile(self):
@@ -54,7 +184,6 @@ class UserInterface(QtCore.QObject):
             self.updateDecodeButton()
             self.filepath = file_name
             self.ui.play_audio_button.setEnabled(True)
-            self.ui.play_audio_button.clicked.connect(self.playAudio(self.filepath))
 
     @QtCore.Slot()
     def updateDecodeButton(self):
@@ -63,11 +192,32 @@ class UserInterface(QtCore.QObject):
         else:
             self.ui.decode_button.setEnabled(False)
 
+    @QtCore.Slot()
+    def updateBoxes(self):
+        if self.ui.checkbox_none.isChecked():
+            self.ui.checkbox_2.setEnabled(False)
+            self.ui.checkbox_3.setEnabled(False)
+            self.ui.checkbox_2.setChecked(False)
+            self.ui.checkbox_3.setChecked(False)
+        elif self.ui.checkbox_none.isChecked() == False:
+            self.ui.checkbox_2.setEnabled(True)
+            self.ui.checkbox_3.setEnabled(True)
+
+
     def playAudio(self, file_path):
-        print(file_path)
         self.mediaPlayer.setSource(QtCore.QUrl.fromLocalFile(file_path))
-        self.audioOutput.setVolume(0.03)
+        self.audioOutput.setVolume(self.ui.audio_slider.value()/1000.0)
         self.mediaPlayer.play()
+        self.ui.play_audio_button.setEnabled(False)
+        self.ui.pause_button.setEnabled(True)
+
+    def pauseAudio(self):
+        self.mediaPlayer.pause()
+        self.ui.pause_button.setEnabled(False)
+        self.ui.play_audio_button.setEnabled(True)
+
+    def setVolume(self):
+        self.audioOutput.setVolume(self.ui.audio_slider.value()/1000.0)
     
     def connectSSH(self):
         self.ssh = paramiko.SSHClient()
@@ -85,6 +235,8 @@ class UserInterface(QtCore.QObject):
                 text = self.ui.terminal_text.toPlainText()
                 self.ui.terminal_text.setText(text[:-24])
                 self.ui.pi_connect_button.setEnabled(False)
+                self.ui.imagePathFrame.setEnabled(True)
+                self.updateConfig()
         except paramiko.AuthenticationException:
             print("Authentication failed")
             self.ui.terminal_text.setText("Authentication failed")
@@ -138,6 +290,54 @@ class UserInterface(QtCore.QObject):
         self.ui.pi_connect_button.setEnabled(True)
         self.ui.pi_initialize_button.setEnabled(False)
         self.ssh.close()
+    
+    def initializePi(self):
+        self.runCommand('sudo apt-get update && sudo apt-get upgrade -y')
+        self.runCommand(f'{self.password}')
+        self.runCommand("sudo apt-get install git cmake libusb-dev libusb-1.0-0-dev build-essential && git clone https://github.com/rxseger/rx_tools.git && \
+                        cd rx_tools && mkdir -p build && cd build && cmake ../ && make && sudo make install && \
+                        rx_fm_demod -h && sudo apt-get install vsftpd && sudo systemctl start vsftpd && \
+                        sudo systemctl enable vsftpd && sudo systemctl status vsftpd")
+        self.runCommand("mkdir -p intelliTrack")
+        self.runCommand("cd intelliTrack")
+        self.runCommand("mkdir -p images")
+        self.runCommand("cd images && mkdir -p NOAA15 && mkdir -p NOAA18 && mkdir -p NOAA19")
+        self.localpath = os.getcwd()
+        self.updateConfig()
+        self.loadCongif()
+
+    def refreshImages(self):
+        self.localpath = self.ui.images_path_text.text()
+        functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/intelliTrack/images/NOAA15", "NOAA15", self.localpath)
+        functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/intelliTrack/images/NOAA18", "NOAA18", self.localpath)
+        functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/intelliTrack/images/NOAA19", "NOAA19", self.localpath)
+        self.updateConfig()
+
+    def updateConfig(self):
+        functions.updateConfigFile(self.localpath, self.ip, self.user, self.password)
+
+    def loadCongif(self):
+        path, ip, name, password = functions.loadConfigFile()
+        self.ui.images_path_text.setText(path)
+        self.ui.ip_input.setText(ip)
+        self.ui.username_input.setText(name)
+        self.ui.password_input.setText(password)
+
+    def checkEnable(self):
+        if self.ui.ip_input.text() and self.ui.username_input.text() and self.ui.password_input.text():
+            self.ui.pi_connect_button.setEnabled(True)
+
+    def checkInternetConnection(self):
+        if functions.checkInternetConnection():
+            self.ui.scheduling_page.setEnabled(True)
+            self.ui.images_page.setEnabled(True)
+            self.ui.settings_page.setEnabled(True)
+
+    def decodeImage(self):
+        image = os.path.join(os.getcwd(), "images/NOAA15/test15.png")
+        pixmage = QPixmap(image)
+        self.ui.image_label.setPixmap(pixmage)
+        self.ui.image_label.setScaledContents(True)
 
     def show(self):
         self.ui.show()
