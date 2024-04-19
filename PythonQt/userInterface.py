@@ -1,7 +1,7 @@
 from PySide6 import QtCore, QtWidgets
-from PySide6.QtWidgets import QFileDialog
+from PySide6.QtWidgets import QFileDialog, QVBoxLayout, QTreeWidgetItem, QMainWindow, QLabel
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtGui import QColor, QPainter
+from PySide6.QtGui import QColor, QPainter, QPixmap, QIcon
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 import os
 import paramiko
@@ -19,7 +19,9 @@ class UserInterface(QtCore.QObject):
         self.localpath = ""
         self.ui = loader.load("uiFile/mainwindow.ui", None)
         self.ui.setWindowTitle("intelliTrack")
+        self.ui.full_size_window = None
 
+        self.ui.image_frame.setLayout(QVBoxLayout())
         self.ui.file_import_button.clicked.connect(self.openWavFile)
         self.ui.decode_button.setEnabled(False)
         self.ui.play_audio_button.setEnabled(False)
@@ -61,6 +63,7 @@ class UserInterface(QtCore.QObject):
         self.ui.pi_initialize_button.clicked.connect(self.initializePi)
         self.ui.refresh_images_button.clicked.connect(self.refreshImages)
         self.ui.images_path_text.returnPressed.connect(self.refreshImages)
+        self.ui.decode_button.clicked.connect(self.decodeImage)
 
         self.ui.terminal_text.setReadOnly(True)
         
@@ -70,6 +73,108 @@ class UserInterface(QtCore.QObject):
 
         self.checkInternetConnection()
         self.loadCongif()
+
+        ## Image Page
+        self.ui.image_structure.itemSelectionChanged.connect(self.updateImages)
+        self.ui.image_display.itemClicked.connect(self.fullSizeImage)
+        self.addRootItems()
+        
+
+    def addRootItems(self):
+        rootItem1 = QTreeWidgetItem(self.ui.image_structure, ["NOAA15"])
+        rootItem1.setIcon(0, QIcon(os.path.join(os.getcwd(), "resources/folderIcon.png")))
+        rootItem2 = QTreeWidgetItem(self.ui.image_structure, ["NOAA18"])
+        rootItem2.setIcon(0, QIcon(os.path.join(os.getcwd(), "resources/folderIcon.png")))
+        rootItem3 = QTreeWidgetItem(self.ui.image_structure, ["NOAA19"])
+        rootItem3.setIcon(0, QIcon(os.path.join(os.getcwd(), "resources/folderIcon.png")))
+
+    def updateImages(self):
+        selectedItem = self.ui.image_structure.currentItem()
+        folder = selectedItem.text(0)
+        folderPath = os.path.join(self.localpath, "images", folder)
+
+        self.clearImages()
+
+        imageFiles = [f for f in os.listdir(folderPath) if f.endswith(".png")]
+
+
+        for idx, image in enumerate(imageFiles):
+            pixmap = QPixmap(os.path.join(folderPath, image))
+            pixmap = pixmap.scaled(250, 300, QtCore.Qt.KeepAspectRatio)
+
+            # Create a QLabel widget to display the image
+            image_label = QtWidgets.QLabel()
+            image_label.setPixmap(pixmap)
+
+            # Create a QLabel widget to display the filename
+            filename_label = QtWidgets.QLabel(image)
+            filename_label.setAlignment(QtCore.Qt.AlignCenter)
+
+            # Create a QVBoxLayout to stack the image and filename labels vertically
+            layout = QtWidgets.QVBoxLayout()
+            layout.addWidget(image_label)
+            layout.addWidget(filename_label)
+            layout.setAlignment(QtCore.Qt.AlignCenter)
+
+            # Create a QWidget to hold the layout
+            widget = QtWidgets.QWidget()
+            widget.setLayout(layout)
+
+            # Add the QWidget to a QListWidgetItem
+            item = QtWidgets.QListWidgetItem()
+            item.setSizeHint(QtCore.QSize(280,300))
+            item.setText(f"{folder}/{image}")  # Set the size hint for the item
+            self.ui.image_display.addItem(item)
+            self.ui.image_display.setItemWidget(item, widget)
+
+        # Set the layout mode and resize mode of the QListWidget
+        self.ui.image_display.setLayoutMode(QtWidgets.QListView.SinglePass)
+        self.ui.image_display.setResizeMode(QtWidgets.QListView.Adjust)
+        self.ui.image_display.setViewMode(QtWidgets.QListView.IconMode)
+
+        scrollBar = self.ui.image_display.verticalScrollBar()
+        scrollBar.setSingleStep(10)
+        
+    def clearImages(self):
+            self.ui.image_display.clear()
+
+    def fullSizeImage(self, item):
+        # Get the text (filename) of the clicked item
+        filename = item.text()
+
+        # Create a new window to display the full-size image
+        self.full_size_window = QMainWindow()
+        self.full_size_window.setWindowTitle(filename)
+        self.full_size_window.setStyleSheet("QMainWindow { border: 10px solid black; }")
+        # Create a label to display the full-size image
+        full_size_label = QLabel()
+        pixmap = QPixmap(os.path.join(self.localpath, "images", filename))
+        full_size_label.setPixmap(pixmap)
+        full_size_label.setScaledContents(True)
+        # Set size policy for the label to "Ignored" to allow free resizing
+        full_size_label.setSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored)
+
+        # Create a vertical layout for the central widget and add the label
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(full_size_label)
+
+        # Create a widget to serve as the central widget and set the layout
+        central_widget = QtWidgets.QWidget()
+        central_widget.setLayout(layout)
+
+        # Set the central widget of the QMainWindow
+        self.full_size_window.setCentralWidget(central_widget)
+
+        # Resize the window to fit the image, with a maximum size limit
+        max_width = 800  # Set maximum width for the window
+        max_height = 600  # Set maximum height for the window
+        window_width = min(pixmap.width(), max_width)
+        window_height = min(pixmap.height(), max_height)
+        self.full_size_window.resize(window_width, window_height)
+
+        # Show the window
+        self.full_size_window.show()
+
     @QtCore.Slot()
     def openWavFile(self):
         options = QFileDialog.Options()
@@ -227,5 +332,12 @@ class UserInterface(QtCore.QObject):
             self.ui.scheduling_page.setEnabled(True)
             self.ui.images_page.setEnabled(True)
             self.ui.settings_page.setEnabled(True)
+
+    def decodeImage(self):
+        image = os.path.join(os.getcwd(), "images/NOAA15/test15.png")
+        pixmage = QPixmap(image)
+        self.ui.image_label.setPixmap(pixmage)
+        self.ui.image_label.setScaledContents(True)
+
     def show(self):
         self.ui.show()

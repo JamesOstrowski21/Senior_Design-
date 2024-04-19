@@ -27,6 +27,12 @@
 	border-color: #051a39;
 
 }
+QListWidget::item:hover {
+border: 1px solid #607cff;
+}
+QListWidget#image_display{
+border: 1px solid #607cff;
+}
 QWidget#waveform_widget
 {
 border: 1px solid #607cff;
@@ -559,6 +565,9 @@ border: 1px solid #607cff;
 }
 QFrame#image_frame{
 border: 1px solid #607cff;
+}
+QTreeWidget{
+border: none;
 }
 QFrame#image_frame
 {
@@ -1287,7 +1296,7 @@ QStatusBar
          </size>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="decode_page">
          <attribute name="title">
@@ -1646,6 +1655,31 @@ QStatusBar
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
+          <widget class="QLabel" name="image_label">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>880</width>
+             <height>570</height>
+            </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>880</width>
+             <height>570</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>880</width>
+             <height>570</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
          </widget>
         </widget>
         <widget class="QWidget" name="scheduling_page">
@@ -1975,8 +2009,8 @@ QStatusBar
          <widget class="QFrame" name="satellite_list_frame">
           <property name="geometry">
            <rect>
-            <x>19</x>
-            <y>19</y>
+            <x>20</x>
+            <y>10</y>
             <width>201</width>
             <height>541</height>
            </rect>
@@ -1987,262 +2021,49 @@ QStatusBar
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <widget class="QListWidget" name="satellite_list_3">
+          <widget class="QTreeWidget" name="image_structure">
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
-             <width>191</width>
-             <height>531</height>
+             <y>10</y>
+             <width>201</width>
+             <height>231</height>
             </rect>
            </property>
-           <item>
+           <column>
             <property name="text">
-             <string>Satellite 1</string>
+             <string>Images</string>
             </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Satellite 2</string>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <bold>true</bold>
+             </font>
             </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Satellite 3</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Satellite 4</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Satellite 5</string>
-            </property>
-           </item>
+           </column>
           </widget>
          </widget>
-         <widget class="QScrollArea" name="image_display_scrollarea">
+         <widget class="QListWidget" name="image_display">
           <property name="geometry">
            <rect>
-            <x>230</x>
+            <x>260</x>
             <y>20</y>
-            <width>931</width>
-            <height>531</height>
+            <width>900</width>
+            <height>570</height>
            </rect>
           </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
+          <property name="minimumSize">
+           <size>
+            <width>900</width>
+            <height>570</height>
+           </size>
           </property>
-          <property name="frameShadow">
-           <enum>QFrame::Sunken</enum>
+          <property name="maximumSize">
+           <size>
+            <width>900</width>
+            <height>570</height>
+           </size>
           </property>
-          <property name="widgetResizable">
-           <bool>true</bool>
-          </property>
-          <widget class="QWidget" name="scrollAreaWidgetContents">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>929</width>
-             <height>529</height>
-            </rect>
-           </property>
-           <widget class="QLabel" name="label_2">
-            <property name="geometry">
-             <rect>
-              <x>40</x>
-              <y>20</y>
-              <width>151</width>
-              <height>131</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(27, 27, 27);</string>
-            </property>
-            <property name="text">
-             <string>Img 1</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_11">
-            <property name="geometry">
-             <rect>
-              <x>240</x>
-              <y>20</y>
-              <width>151</width>
-              <height>131</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(27, 27, 27);</string>
-            </property>
-            <property name="text">
-             <string>Img 2</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_12">
-            <property name="geometry">
-             <rect>
-              <x>440</x>
-              <y>20</y>
-              <width>151</width>
-              <height>131</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(27, 27, 27);</string>
-            </property>
-            <property name="text">
-             <string>Img 3</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_13">
-            <property name="geometry">
-             <rect>
-              <x>440</x>
-              <y>190</y>
-              <width>151</width>
-              <height>131</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(27, 27, 27);</string>
-            </property>
-            <property name="text">
-             <string>Img 7</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_14">
-            <property name="geometry">
-             <rect>
-              <x>440</x>
-              <y>360</y>
-              <width>151</width>
-              <height>131</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(27, 27, 27);</string>
-            </property>
-            <property name="text">
-             <string>Img 11</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_15">
-            <property name="geometry">
-             <rect>
-              <x>240</x>
-              <y>360</y>
-              <width>151</width>
-              <height>131</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(27, 27, 27);</string>
-            </property>
-            <property name="text">
-             <string>Img 10</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_16">
-            <property name="geometry">
-             <rect>
-              <x>240</x>
-              <y>190</y>
-              <width>151</width>
-              <height>131</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(27, 27, 27);</string>
-            </property>
-            <property name="text">
-             <string>Img 6</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_17">
-            <property name="geometry">
-             <rect>
-              <x>40</x>
-              <y>190</y>
-              <width>151</width>
-              <height>131</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(27, 27, 27);</string>
-            </property>
-            <property name="text">
-             <string>Img 5</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_18">
-            <property name="geometry">
-             <rect>
-              <x>40</x>
-              <y>360</y>
-              <width>151</width>
-              <height>131</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(27, 27, 27);</string>
-            </property>
-            <property name="text">
-             <string>Img 9</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_19">
-            <property name="geometry">
-             <rect>
-              <x>640</x>
-              <y>20</y>
-              <width>151</width>
-              <height>131</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(27, 27, 27);</string>
-            </property>
-            <property name="text">
-             <string>Img 4</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_20">
-            <property name="geometry">
-             <rect>
-              <x>640</x>
-              <y>190</y>
-              <width>151</width>
-              <height>131</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(27, 27, 27);</string>
-            </property>
-            <property name="text">
-             <string>Img 8</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label_21">
-            <property name="geometry">
-             <rect>
-              <x>640</x>
-              <y>360</y>
-              <width>151</width>
-              <height>131</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(27, 27, 27);</string>
-            </property>
-            <property name="text">
-             <string>Img 12</string>
-            </property>
-           </widget>
-          </widget>
          </widget>
         </widget>
         <widget class="QWidget" name="settings_page">
