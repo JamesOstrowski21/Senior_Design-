@@ -7,7 +7,11 @@ import os
 import paramiko
 import re
 import time
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import functions
+from intelliTrack.schedule_passes import Scheduler 
+from intelliTrack.intelliTrack.compute_passes import make_station as makeStation
 
 
 loader = QUiLoader()
@@ -20,6 +24,9 @@ class UserInterface(QtCore.QObject):
         self.ui = loader.load("uiFile/mainwindow.ui", None)
         self.ui.setWindowTitle("intelliTrack")
         self.ui.full_size_window = None
+        self.ip = None
+        self.user = None
+        self.password = None
 
         self.ui.image_frame.setLayout(QVBoxLayout())
         self.ui.file_import_button.clicked.connect(self.openWavFile)
@@ -78,7 +85,71 @@ class UserInterface(QtCore.QObject):
         self.ui.image_structure.itemSelectionChanged.connect(self.updateImages)
         self.ui.image_display.itemClicked.connect(self.fullSizeImage)
         self.addRootItems()
+
+        ## Scheduling Page
+        self.ui.predict_button.setEnabled(False)
+        self.ui.predict_button.clicked.connect(self.predictPasses)
+        self.ui.schedule_button.setEnabled(False)
+        self.predictBoxes = [self.ui.NOAA15_checkbox, self.ui.NOAA18_checkbox, self.ui.NOAA19_checkbox]
+        for checkbox in self.predictBoxes:
+            checkbox.stateChanged.connect(self.updatePredictButton)
+            checkbox.setFocusPolicy(QtCore.Qt.NoFocus)
         
+        self.ui.longitude.textChanged.connect(self.updatePredictButton)
+        self.ui.latitude.textChanged.connect(self.updatePredictButton)
+        self.ui.elevation.textChanged.connect(self.updatePredictButton)
+
+    def predictPasses(self):
+        self.longitude = self.ui.longitude.text()
+        self.latitude = self.ui.latitude.text()
+        self.elevation = self.ui.elevation.text()
+        self.ui.predicted_passes.clearContents()
+        self.ui.predicted_passes.setRowCount(0)
+        sats = []
+        if self.ui.NOAA15_checkbox.isChecked():
+            sats.append("NOAA 15")
+        if self.ui.NOAA18_checkbox.isChecked():
+            sats.append("NOAA 18")
+        if self.ui.NOAA19_checkbox.isChecked():
+            sats.append("NOAA 19")
+
+        lle = (float(self.ui.longitude.text()), float(self.ui.longitude.text()), float(self.ui.elevation.text()))
+    
+        station = makeStation("Home", *lle)
+
+        scheduler = Scheduler()
+        self.confirmed_passes = scheduler.schedule_passes(sats, station)
+        for passes in self.confirmed_passes:
+            quality = "{:.2f}".format(passes.quality)
+            duration = "{:.2f}".format(passes.duration.total_seconds()/60) + " minutes"
+            self.ui.predicted_passes.insertRow(self.ui.predicted_passes.rowCount())
+            data = [passes.satellite, passes.start_time.strftime('%Y-%m-%d %H:%M:%S'), passes.end_time.strftime('%Y-%m-%d %H:%M:%S'), duration, quality]
+            for column, value in enumerate(data):
+                item = QtWidgets.QTableWidgetItem(value)
+                self.ui.predicted_passes.setItem(self.ui.predicted_passes.rowCount()-1, column, item)
+        for row in range(self.ui.predicted_passes.rowCount()):
+            button = QtWidgets.QPushButton("View Plot")
+            button.clicked.connect(self.viewPlot)
+            self.ui.predicted_passes.setCellWidget(row, 5, button)
+        self.ui.predicted_passes.setColumnWidth(1, 118)
+        self.ui.predicted_passes.setColumnWidth(2, 118)
+        # self.ui.predicted_passes.cellClicked.connect(lambda row, col: self.viewPlot(row, col))
+        self.updateConfig()
+    
+    def viewPlot(self):
+        print(self.ui.predicted_passes.currentRow())
+        self.confirmed_passes[self.ui.predicted_passes.currentRow()].plot_station_pointings()
+
+    def updatePredictButton(self):
+        temp = False
+        if any(checkbox.isChecked() for checkbox in self.predictBoxes):
+            temp = True
+        else:
+            self.ui.predict_button.setEnabled(False)
+            temp = False
+
+        if self.ui.longitude.text() and self.ui.latitude.text() and self.ui.elevation.text() and temp:
+            self.ui.predict_button.setEnabled(True)
 
     def addRootItems(self):
         rootItem1 = QTreeWidgetItem(self.ui.image_structure, ["NOAA15"])
@@ -314,14 +385,17 @@ class UserInterface(QtCore.QObject):
         self.updateConfig()
 
     def updateConfig(self):
-        functions.updateConfigFile(self.localpath, self.ip, self.user, self.password)
+        functions.updateConfigFile(self.localpath, self.ip, self.user, self.password, self.longitude, self.latitude, self.elevation)
 
     def loadCongif(self):
-        path, ip, name, password = functions.loadConfigFile()
+        path, ip, name, password, longitude, latitude, elevation = functions.loadConfigFile()
         self.ui.images_path_text.setText(path)
         self.ui.ip_input.setText(ip)
         self.ui.username_input.setText(name)
         self.ui.password_input.setText(password)
+        self.ui.longitude.setText(longitude)
+        self.ui.latitude.setText(latitude)
+        self.ui.elevation.setText(elevation)
 
     def checkEnable(self):
         if self.ui.ip_input.text() and self.ui.username_input.text() and self.ui.password_input.text():

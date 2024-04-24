@@ -20,7 +20,7 @@ def ftp_connect(host, user, passwd, filepath, folder, localpath):
 
     ftp.quit()
 
-def updateConfigFile(imagesPath, ip, username, password):
+def updateConfigFile(imagesPath, ip, username, password, longitude, latitude, elevation):
     path = os.path.join(os.getcwd(), "config.txt")
     try:
         with open(path, "w") as file:
@@ -28,6 +28,9 @@ def updateConfigFile(imagesPath, ip, username, password):
             file.write(f"{ip}\n")
             file.write(f"{username}\n")
             file.write(f"{password}\n")
+            file.write(f"{longitude}\n")
+            file.write(f"{latitude}\n")
+            file.write(f"{elevation}\n")
     except Exception as e:
         print(e)
 
@@ -37,7 +40,7 @@ def loadConfigFile():
         with open(path, "r") as file:
             lines = file.readlines()
             if lines:
-                return lines[0].strip(), lines[1].strip(), lines[2].strip(), lines[3].strip()
+                return lines[0].strip(), lines[1].strip(), lines[2].strip(), lines[3].strip(), lines[4].strip(), lines[5].strip(), lines[6].strip()
     except Exception as e:
         print(e)
         return None

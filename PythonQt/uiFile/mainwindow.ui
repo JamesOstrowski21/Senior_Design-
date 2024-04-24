@@ -1779,7 +1779,7 @@ QStatusBar
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_9">
               <item alignment="Qt::AlignHCenter">
-               <widget class="QCheckBox" name="checkBox">
+               <widget class="QCheckBox" name="NOAA15_checkbox">
                 <property name="font">
                  <font>
                   <pointsize>10</pointsize>
@@ -1792,7 +1792,7 @@ QStatusBar
                </widget>
               </item>
               <item alignment="Qt::AlignHCenter">
-               <widget class="QCheckBox" name="checkBox_3">
+               <widget class="QCheckBox" name="NOAA18_checkbox">
                 <property name="font">
                  <font>
                   <pointsize>10</pointsize>
@@ -1805,7 +1805,7 @@ QStatusBar
                </widget>
               </item>
               <item alignment="Qt::AlignHCenter">
-               <widget class="QCheckBox" name="checkBox_2">
+               <widget class="QCheckBox" name="NOAA19_checkbox">
                 <property name="font">
                  <font>
                   <pointsize>10</pointsize>
@@ -2116,24 +2116,24 @@ QStatusBar
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <widget class="QTableWidget" name="tableWidget">
+          <widget class="QTableWidget" name="predicted_passes">
            <property name="geometry">
             <rect>
              <x>140</x>
              <y>0</y>
-             <width>642</width>
+             <width>675</width>
              <height>230</height>
             </rect>
            </property>
            <property name="minimumSize">
             <size>
-             <width>642</width>
+             <width>675</width>
              <height>230</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>620</width>
+             <width>675</width>
              <height>230</height>
             </size>
            </property>
