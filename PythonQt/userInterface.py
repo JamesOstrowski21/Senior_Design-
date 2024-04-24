@@ -12,7 +12,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import functions
 from intelliTrack.schedule_passes import Scheduler 
 from intelliTrack.intelliTrack.compute_passes import make_station as makeStation
-
+from beyond.dates import timedelta
 
 loader = QUiLoader()
 
@@ -27,6 +27,9 @@ class UserInterface(QtCore.QObject):
         self.ip = None
         self.user = None
         self.password = None
+        
+        self.station = None 
+        self.scheduler = Scheduler()
 
         self.ui.image_frame.setLayout(QVBoxLayout())
         self.ui.file_import_button.clicked.connect(self.openWavFile)
@@ -94,9 +97,9 @@ class UserInterface(QtCore.QObject):
         for checkbox in self.predictBoxes:
             checkbox.stateChanged.connect(self.updatePredictButton)
             checkbox.setFocusPolicy(QtCore.Qt.NoFocus)
-        
-        self.ui.longitude.textChanged.connect(self.updatePredictButton)
+            
         self.ui.latitude.textChanged.connect(self.updatePredictButton)
+        self.ui.longitude.textChanged.connect(self.updatePredictButton)
         self.ui.elevation.textChanged.connect(self.updatePredictButton)
 
     def predictPasses(self):
@@ -113,31 +116,39 @@ class UserInterface(QtCore.QObject):
         if self.ui.NOAA19_checkbox.isChecked():
             sats.append("NOAA 19")
 
-        lle = (float(self.ui.longitude.text()), float(self.ui.longitude.text()), float(self.ui.elevation.text()))
+        # TODO: if the user changes their ground station update the lle, else do nothing
+        lle = (float(self.ui.latitude.text()), float(self.ui.longitude.text()), float(self.ui.elevation.text()))
+        self.station = makeStation("Home", *lle)
     
-        station = makeStation("Home", *lle)
-
-        scheduler = Scheduler()
-        self.confirmed_passes = scheduler.schedule_passes(sats, station)
-        for passes in self.confirmed_passes:
-            quality = "{:.2f}".format(passes.quality)
-            duration = "{:.2f}".format(passes.duration.total_seconds()/60) + " minutes"
+        # TODO: allow user to set a quality thresh, also maybe allow them to set the stop time (up to a week maybe)
+        # scheduler.quality_thres = 0.25
+        self.confirmed_passes = self.scheduler.schedule_passes(sats, self.station, stop=timedelta(days=1))
+        for _pass in self.confirmed_passes:
+            quality = "{:.2f}".format(_pass.quality)
+            duration = "{:.2f}".format(_pass.duration.total_seconds()/60) + " minutes"
             self.ui.predicted_passes.insertRow(self.ui.predicted_passes.rowCount())
-            data = [passes.satellite, passes.start_time.strftime('%Y-%m-%d %H:%M:%S'), passes.end_time.strftime('%Y-%m-%d %H:%M:%S'), duration, quality]
+            data = [_pass.satellite, 
+                    _pass.start_time.strftime('%M-%d-%Y %H:%M:%S'), 
+                    _pass.end_time.strftime('%M-%d-%Y %H:%M:%S'), 
+                    duration, quality]
+            
             for column, value in enumerate(data):
                 item = QtWidgets.QTableWidgetItem(value)
                 self.ui.predicted_passes.setItem(self.ui.predicted_passes.rowCount()-1, column, item)
+                
+        # TODO: If the user presses the upper left corner of the label, the buttons to view the pointings vanishes
         for row in range(self.ui.predicted_passes.rowCount()):
             button = QtWidgets.QPushButton("View Plot")
             button.clicked.connect(self.viewPlot)
             self.ui.predicted_passes.setCellWidget(row, 5, button)
+            
         self.ui.predicted_passes.setColumnWidth(1, 118)
         self.ui.predicted_passes.setColumnWidth(2, 118)
         # self.ui.predicted_passes.cellClicked.connect(lambda row, col: self.viewPlot(row, col))
         self.updateConfig()
     
     def viewPlot(self):
-        print(self.ui.predicted_passes.currentRow())
+        # print(self.ui.predicted_passes.currentRow())
         self.confirmed_passes[self.ui.predicted_passes.currentRow()].plot_station_pointings()
 
     def updatePredictButton(self):
