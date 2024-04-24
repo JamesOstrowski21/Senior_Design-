@@ -22,14 +22,21 @@ def ftp_connect(host, user, passwd, filepath, folder, localpath):
 
 def updateConfigFile(imagesPath, ip, username, password, longitude, latitude, elevation):
     path = os.path.join(os.getcwd(), "config.txt")
+    if not os.path.exists(path):
+        try:
+            with open(path, "w") as file:
+                pass
+        except Exception as e:
+            print(e)
+            return      
     try:
         with open(path, "w") as file:
             file.write(f"{imagesPath}\n")
             file.write(f"{ip}\n")
             file.write(f"{username}\n")
             file.write(f"{password}\n")
-            file.write(f"{longitude}\n")
             file.write(f"{latitude}\n")
+            file.write(f"{longitude}\n")
             file.write(f"{elevation}\n")
     except Exception as e:
         print(e)

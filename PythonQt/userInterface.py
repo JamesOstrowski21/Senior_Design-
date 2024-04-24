@@ -24,9 +24,12 @@ class UserInterface(QtCore.QObject):
         self.ui = loader.load("uiFile/mainwindow.ui", None)
         self.ui.setWindowTitle("intelliTrack")
         self.ui.full_size_window = None
-        self.ip = None
-        self.user = None
-        self.password = None
+        self.ip = ""
+        self.user = ""
+        self.password = ""
+        self.longitude = ""
+        self.latitude = ""
+        self.elevation = ""
         
         self.station = None 
         self.scheduler = Scheduler()
@@ -82,7 +85,8 @@ class UserInterface(QtCore.QObject):
         self.ui.terminal_close_button.clicked.connect(self.closeTerminal)
 
         self.checkInternetConnection()
-        self.loadCongif()
+        self.updateConfig()
+        self.loadConfig()
 
         ## Image Page
         self.ui.image_structure.itemSelectionChanged.connect(self.updateImages)
@@ -101,6 +105,10 @@ class UserInterface(QtCore.QObject):
         self.ui.latitude.textChanged.connect(self.updatePredictButton)
         self.ui.longitude.textChanged.connect(self.updatePredictButton)
         self.ui.elevation.textChanged.connect(self.updatePredictButton)
+
+        self.ui.predicted_passes.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.ui.predicted_passes.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
+
 
     def predictPasses(self):
         self.longitude = self.ui.longitude.text()
@@ -128,8 +136,8 @@ class UserInterface(QtCore.QObject):
             duration = "{:.2f}".format(_pass.duration.total_seconds()/60) + " minutes"
             self.ui.predicted_passes.insertRow(self.ui.predicted_passes.rowCount())
             data = [_pass.satellite, 
-                    _pass.start_time.strftime('%M-%d-%Y %H:%M:%S'), 
-                    _pass.end_time.strftime('%M-%d-%Y %H:%M:%S'), 
+                    _pass.start_time.strftime('%m-%d-%Y %H:%M:%S'), 
+                    _pass.end_time.strftime('%m-%d-%Y %H:%M:%S'), 
                     duration, quality]
             
             for column, value in enumerate(data):
@@ -144,11 +152,10 @@ class UserInterface(QtCore.QObject):
             
         self.ui.predicted_passes.setColumnWidth(1, 118)
         self.ui.predicted_passes.setColumnWidth(2, 118)
-        # self.ui.predicted_passes.cellClicked.connect(lambda row, col: self.viewPlot(row, col))
+        self.ui.predicted_passes.setColumnWidth(4, 92)
         self.updateConfig()
     
     def viewPlot(self):
-        # print(self.ui.predicted_passes.currentRow())
         self.confirmed_passes[self.ui.predicted_passes.currentRow()].plot_station_pointings()
 
     def updatePredictButton(self):
@@ -398,8 +405,8 @@ class UserInterface(QtCore.QObject):
     def updateConfig(self):
         functions.updateConfigFile(self.localpath, self.ip, self.user, self.password, self.longitude, self.latitude, self.elevation)
 
-    def loadCongif(self):
-        path, ip, name, password, longitude, latitude, elevation = functions.loadConfigFile()
+    def loadConfig(self):
+        path, ip, name, password, latitude, longitude, elevation = functions.loadConfigFile()
         self.ui.images_path_text.setText(path)
         self.ui.ip_input.setText(ip)
         self.ui.username_input.setText(name)

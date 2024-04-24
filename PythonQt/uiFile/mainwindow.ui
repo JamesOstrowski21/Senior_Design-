@@ -1860,6 +1860,25 @@ QStatusBar
                 </property>
                </widget>
               </item>
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QProgressBar" name="predict_progress">
+                <property name="minimumSize">
+                 <size>
+                  <width>200</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="value">
+                 <number>24</number>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -1956,50 +1975,6 @@ QStatusBar
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="longitude_label">
-             <property name="minimumSize">
-              <size>
-               <width>70</width>
-               <height>25</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>70</width>
-               <height>25</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Longitude:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="latitude">
-             <property name="minimumSize">
-              <size>
-               <width>115</width>
-               <height>25</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>115</width>
-               <height>25</height>
-              </size>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QLabel" name="latitude_label">
              <property name="minimumSize">
               <size>
@@ -2025,6 +2000,50 @@ QStatusBar
             </widget>
            </item>
            <item>
+            <widget class="QLineEdit" name="latitude">
+             <property name="minimumSize">
+              <size>
+               <width>115</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>115</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="longitude_label">
+             <property name="minimumSize">
+              <size>
+               <width>70</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>70</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Longitude:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QLineEdit" name="longitude">
              <property name="minimumSize">
               <size>
@@ -2044,7 +2063,7 @@ QStatusBar
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_3">
+            <widget class="QLabel" name="elevation_label">
              <property name="minimumSize">
               <size>
                <width>70</width>
@@ -2217,7 +2236,7 @@ QStatusBar
             </widget>
            </item>
            <item>
-            <widget class="QTextEdit" name="textEdit">
+            <widget class="QTextEdit" name="scheduled_passes_edit">
              <property name="minimumSize">
               <size>
                <width>600</width>
