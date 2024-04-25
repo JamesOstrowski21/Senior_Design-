@@ -107,58 +107,36 @@ class UserInterface(QtCore.QObject):
         self.ui.latitude.textChanged.connect(self.updatePredictButton)
         self.ui.longitude.textChanged.connect(self.updatePredictButton)
         self.ui.elevation.textChanged.connect(self.updatePredictButton)
-
-        self.ui.predicted_passes.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
-        self.ui.predicted_passes.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
-        self.ui.predicted_passes.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        self.ui.schedule_button.clicked.connect(self.schedulePasses)
-        self.ui.scheduled_passes_edit.setReadOnly(True)
-        self.updateScheduledPasses()
-
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.updatePredictProgress)
-        self.timer_interval = 1000
-        self.timer_duration = 20000
-        self.current_duration = 0
-
-    def startPedictProgress(self):
-        self.timer.start(self.timer_interval)
-        self.current_duration = 0
-    
-    def updatePredictProgress(self):
-        if self.current_duration < self.timer_duration:
-            self.current_duration += self.timer_interval
-            self.ui.predict_progress.setValue(int((self.current_duration/self.timer_duration)*100))
-        else:
-            self.timer.stop()
-            self.ui.predict_progress.setValue(99)
-    
-    def schedulePasses(self):
-        selectedIndexes = self.ui.predicted_passes.selectedIndexes()
-        selectedRows = set([index.row() for index in selectedIndexes])
-
-        for row in selectedRows:
-            rowData = [self.ui.predicted_passes.item(row, column).text() for column in range(4)]
-            rowText = "\t".join(rowData)+"\n"
-            functions.updateScheduledPasses(rowText)
         
-        self.updateScheduledPasses()
-
-    def updateScheduledPasses(self):
-        self.ui.scheduled_passes_edit.clear()
-        functions.removePreviousPasses()
-        selectedData = functions.readScheduledPasses()
-        for line in selectedData:
-            self.ui.scheduled_passes_edit.append(line)
-
-
+    def stars(self, quality):
+        
+        if quality >= 0 and quality <= self.scheduler.quality_thres:
+            return "☆☆☆☆☆"  # 0 stars
+        elif quality > self.scheduler.quality_thres and quality <= self.scheduler.quality_thres + 0.1:
+            return "★☆☆☆☆"  # 1 star
+        elif quality > self.scheduler.quality_thres + 0.1 and quality <= self.scheduler.quality_thres + 0.2:
+            return "★★☆☆☆"  # 2 stars
+        elif quality > self.scheduler.quality_thres + 0.2 and quality <= self.scheduler.quality_thres + 0.25:
+            return "★★★☆☆"  # 3 stars
+        elif quality > self.scheduler.quality_thres + 0.25 and quality <= self.scheduler.quality_thres + 0.4:
+            return "★★★★☆"  # 4 stars
+        elif quality > self.scheduler.quality_thres + 0.4:
+            return "★★★★★"  # 5 stars
+        
+    def copyTableInformation(self, pos):
+        item = self.ui.predicted_passes.itemAt(pos)
+        if item is not None:
+            self.ui.predicted_passes.copy()
+            
     def predictPasses(self):
         self.longitude = self.ui.longitude.text()
         self.latitude = self.ui.latitude.text()
         self.elevation = self.ui.elevation.text()
         self.ui.predicted_passes.clearContents()
         self.ui.predicted_passes.setRowCount(0)
-        self.ui.predict_progress.setValue(0)
+        
+        self.ui.predicted_passes.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+    
         sats = []
         if self.ui.NOAA15_checkbox.isChecked():
             sats.append("NOAA 15")
@@ -166,6 +144,7 @@ class UserInterface(QtCore.QObject):
             sats.append("NOAA 18")
         if self.ui.NOAA19_checkbox.isChecked():
             sats.append("NOAA 19")
+            
         time = 1
         if self.ui.ranges.currentText() == "1 Day":
             time = 1
@@ -178,7 +157,7 @@ class UserInterface(QtCore.QObject):
         lle = (float(self.ui.latitude.text()), float(self.ui.longitude.text()), float(self.ui.elevation.text()))
         self.station = makeStation("Home", *lle)
     
-        # TODO: allow user to set a quality thresh, also maybe allow them to set the stop time (up to a week maybe)
+        # TODO: allow user to set a quality threshold
         # scheduler.quality_thres = 0.25
         self.confirmed_passes = self.scheduler.schedule_passes(self.ui.predict_progress, sats, self.station, stop=timedelta(days=time))
         self.ui.predict_progress.setValue(100)
@@ -188,9 +167,9 @@ class UserInterface(QtCore.QObject):
             duration = "{:.2f}".format(_pass.duration.total_seconds()/60) + " minutes"
             self.ui.predicted_passes.insertRow(self.ui.predicted_passes.rowCount())
             data = [_pass.satellite, 
-                    utc_to_local(_pass.start_time).strftime('%m-%d-%Y %H:%M:%S'), 
-                    utc_to_local(_pass.end_time).strftime('%m-%d-%Y %H:%M:%S'), 
-                    duration, quality]
+                    _pass.get_start_time().strftime('%m-%d-%Y %H:%M:%S'), 
+                    _pass.get_end_time().strftime('%m-%d-%Y %H:%M:%S'), 
+                    duration, self.stars(float(quality))]
             
             for column, value in enumerate(data):
                 item = QtWidgets.QTableWidgetItem(value)
