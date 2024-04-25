@@ -11,7 +11,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import functions
 from intelliTrack.schedule_passes import Scheduler 
-from intelliTrack.intelliTrack.compute_passes import make_station as makeStation
+from intelliTrack.intelliTrack.compute_passes import make_station as makeStation, utc_to_local
 from beyond.dates import timedelta
 
 loader = QUiLoader()
@@ -85,7 +85,9 @@ class UserInterface(QtCore.QObject):
         self.ui.terminal_close_button.clicked.connect(self.closeTerminal)
 
         self.checkInternetConnection()
-        self.updateConfig()
+        functions.makeDirs()
+        functions.makeFiles()
+        functions.removePreviousPasses()
         self.loadConfig()
 
         ## Image Page
@@ -108,6 +110,46 @@ class UserInterface(QtCore.QObject):
 
         self.ui.predicted_passes.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
         self.ui.predicted_passes.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
+        self.ui.predicted_passes.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.ui.schedule_button.clicked.connect(self.schedulePasses)
+        self.ui.scheduled_passes_edit.setReadOnly(True)
+        self.updateScheduledPasses()
+
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.updatePredictProgress)
+        self.timer_interval = 1000
+        self.timer_duration = 20000
+        self.current_duration = 0
+
+    def startPedictProgress(self):
+        self.timer.start(self.timer_interval)
+        self.current_duration = 0
+    
+    def updatePredictProgress(self):
+        if self.current_duration < self.timer_duration:
+            self.current_duration += self.timer_interval
+            self.ui.predict_progress.setValue(int((self.current_duration/self.timer_duration)*100))
+        else:
+            self.timer.stop()
+            self.ui.predict_progress.setValue(99)
+    
+    def schedulePasses(self):
+        selectedIndexes = self.ui.predicted_passes.selectedIndexes()
+        selectedRows = set([index.row() for index in selectedIndexes])
+
+        for row in selectedRows:
+            rowData = [self.ui.predicted_passes.item(row, column).text() for column in range(4)]
+            rowText = "\t".join(rowData)+"\n"
+            functions.updateScheduledPasses(rowText)
+        
+        self.updateScheduledPasses()
+
+    def updateScheduledPasses(self):
+        self.ui.scheduled_passes_edit.clear()
+        functions.removePreviousPasses()
+        selectedData = functions.readScheduledPasses()
+        for line in selectedData:
+            self.ui.scheduled_passes_edit.append(line)
 
 
     def predictPasses(self):
@@ -116,6 +158,7 @@ class UserInterface(QtCore.QObject):
         self.elevation = self.ui.elevation.text()
         self.ui.predicted_passes.clearContents()
         self.ui.predicted_passes.setRowCount(0)
+        self.ui.predict_progress.setValue(0)
         sats = []
         if self.ui.NOAA15_checkbox.isChecked():
             sats.append("NOAA 15")
@@ -123,6 +166,13 @@ class UserInterface(QtCore.QObject):
             sats.append("NOAA 18")
         if self.ui.NOAA19_checkbox.isChecked():
             sats.append("NOAA 19")
+        time = 1
+        if self.ui.ranges.currentText() == "1 Day":
+            time = 1
+        elif self.ui.ranges.currentText() == "2 Days":
+            time = 2
+        elif self.ui.ranges.currentText() == "3 Days":
+            time = 3
 
         # TODO: if the user changes their ground station update the lle, else do nothing
         lle = (float(self.ui.latitude.text()), float(self.ui.longitude.text()), float(self.ui.elevation.text()))
@@ -130,14 +180,16 @@ class UserInterface(QtCore.QObject):
     
         # TODO: allow user to set a quality thresh, also maybe allow them to set the stop time (up to a week maybe)
         # scheduler.quality_thres = 0.25
-        self.confirmed_passes = self.scheduler.schedule_passes(sats, self.station, stop=timedelta(days=1))
+        self.confirmed_passes = self.scheduler.schedule_passes(self.ui.predict_progress, sats, self.station, stop=timedelta(days=time))
+        self.ui.predict_progress.setValue(100)
+
         for _pass in self.confirmed_passes:
             quality = "{:.2f}".format(_pass.quality)
             duration = "{:.2f}".format(_pass.duration.total_seconds()/60) + " minutes"
             self.ui.predicted_passes.insertRow(self.ui.predicted_passes.rowCount())
             data = [_pass.satellite, 
-                    _pass.start_time.strftime('%m-%d-%Y %H:%M:%S'), 
-                    _pass.end_time.strftime('%m-%d-%Y %H:%M:%S'), 
+                    utc_to_local(_pass.start_time).strftime('%m-%d-%Y %H:%M:%S'), 
+                    utc_to_local(_pass.end_time).strftime('%m-%d-%Y %H:%M:%S'), 
                     duration, quality]
             
             for column, value in enumerate(data):
@@ -154,6 +206,8 @@ class UserInterface(QtCore.QObject):
         self.ui.predicted_passes.setColumnWidth(2, 118)
         self.ui.predicted_passes.setColumnWidth(4, 92)
         self.updateConfig()
+
+        self.ui.schedule_button.setEnabled(True)
     
     def viewPlot(self):
         self.confirmed_passes[self.ui.predicted_passes.currentRow()].plot_station_pointings()
@@ -326,6 +380,7 @@ class UserInterface(QtCore.QObject):
                 self.ui.pi_connect_button.setEnabled(False)
                 self.ui.imagePathFrame.setEnabled(True)
                 self.updateConfig()
+                self.loadConfig()
         except paramiko.AuthenticationException:
             print("Authentication failed")
             self.ui.terminal_text.setText("Authentication failed")
@@ -393,7 +448,7 @@ class UserInterface(QtCore.QObject):
         self.runCommand("cd images && mkdir -p NOAA15 && mkdir -p NOAA18 && mkdir -p NOAA19")
         self.localpath = os.getcwd()
         self.updateConfig()
-        self.loadCongif()
+        self.loadConfig()
 
     def refreshImages(self):
         self.localpath = self.ui.images_path_text.text()
@@ -401,6 +456,7 @@ class UserInterface(QtCore.QObject):
         functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/intelliTrack/images/NOAA18", "NOAA18", self.localpath)
         functions.ftp_connect(self.ip, self.user, self.password, f"/home/{self.user}/intelliTrack/images/NOAA19", "NOAA19", self.localpath)
         self.updateConfig()
+        self.loadConfig()
 
     def updateConfig(self):
         functions.updateConfigFile(self.localpath, self.ip, self.user, self.password, self.longitude, self.latitude, self.elevation)

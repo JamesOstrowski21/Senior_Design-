@@ -4,3 +4,4 @@ PythonQt/config.txt
 PythonQt/logs/full_pass.log
 PythonQt/logs/pass_metrics.log
 PythonQt/logs/*
+PythonQt/scheduledPasses.txt

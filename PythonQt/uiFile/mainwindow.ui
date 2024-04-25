@@ -64,6 +64,13 @@ QLabel#station_label {
     padding: 3px; /* Add some padding around the text */
     background-color: #121212; /* Set the background color to white */
 }
+QLabel#range_label{
+    font-size: 24px; /* Set the font size to 24 pixels */
+    font-weight: bold; /* Make the font bold */
+    color: #607cff; /* Set the text color to a dark shade of gray */
+    padding: 3px; /* Add some padding around the text */
+    background-color: #121212; /* Set the background color to white */
+}
 QLabel#scheduled_passes_label {
     font-size: 24px; /* Set the font size to 24 pixels */
     font-weight: bold; /* Make the font bold */
@@ -1734,7 +1741,7 @@ QStatusBar
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_12">
+          <layout class="QVBoxLayout" name="verticalLayout_13">
            <item>
             <widget class="QLabel" name="predict_satellite_label">
              <property name="minimumSize">
@@ -1821,6 +1828,80 @@ QStatusBar
             </widget>
            </item>
            <item>
+            <widget class="QFrame" name="timeframe_frame">
+             <property name="minimumSize">
+              <size>
+               <width>230</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>230</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_12">
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QLabel" name="range_label">
+                <property name="text">
+                 <string>Timeframe</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QFrame" name="range_box_frame">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout">
+                 <item row="0" column="0">
+                  <widget class="QComboBox" name="ranges">
+                   <property name="minimumSize">
+                    <size>
+                     <width>75</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>75</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>1 Day</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>2 Days</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>3 Days</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="QFrame" name="predict_button_frame">
              <property name="minimumSize">
               <size>
@@ -1875,7 +1956,7 @@ QStatusBar
                  </size>
                 </property>
                 <property name="value">
-                 <number>24</number>
+                 <number>0</number>
                 </property>
                </widget>
               </item>
@@ -1887,7 +1968,7 @@ QStatusBar
              <property name="minimumSize">
               <size>
                <width>230</width>
-               <height>180</height>
+               <height>80</height>
               </size>
              </property>
              <property name="maximumSize">
