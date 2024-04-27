@@ -1324,7 +1324,7 @@ QStatusBar
          </size>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="decode_page">
          <attribute name="title">
@@ -1357,7 +1357,7 @@ QStatusBar
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <layout class="QVBoxLayout" name="verticalLayout_14">
            <item>
             <widget class="QFrame" name="import_frame">
              <property name="minimumSize">
@@ -1496,6 +1496,59 @@ QStatusBar
             </widget>
            </item>
            <item>
+            <widget class="QFrame" name="name_frame">
+             <property name="minimumSize">
+              <size>
+               <width>240</width>
+               <height>45</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>240</width>
+               <height>45</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_13">
+              <item>
+               <widget class="QLabel" name="sat_label">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string> Satellite Name</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="sat_input">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>110</width>
+                  <height>25</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="QFrame" name="decode_button_frame">
              <property name="minimumSize">
               <size>
@@ -1539,11 +1592,54 @@ QStatusBar
             </widget>
            </item>
            <item>
+            <widget class="QFrame" name="decode_progress">
+             <property name="minimumSize">
+              <size>
+               <width>240</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QProgressBar" name="decode_progress_bar">
+                <property name="minimumSize">
+                 <size>
+                  <width>200</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="value">
+                 <number>0</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="QFrame" name="post_processing_frame">
              <property name="minimumSize">
               <size>
                <width>240</width>
-               <height>310</height>
+               <height>200</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>240</width>
+               <height>200</height>
               </size>
              </property>
              <property name="frameShape">
@@ -1586,14 +1682,14 @@ QStatusBar
                <widget class="QFrame" name="processing_checkbox_frame">
                 <property name="minimumSize">
                  <size>
-                  <width>240</width>
-                  <height>200</height>
+                  <width>220</width>
+                  <height>140</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
+                  <width>220</width>
+                  <height>140</height>
                  </size>
                 </property>
                 <property name="frameShape">

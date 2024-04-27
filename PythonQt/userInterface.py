@@ -13,6 +13,8 @@ import functions
 from intelliTrack.schedule_passes import Scheduler 
 from intelliTrack.intelliTrack.compute_passes import make_station as makeStation, utc_to_local
 from beyond.dates import timedelta
+from apt import APT
+from datetime import datetime
 
 loader = QUiLoader()
 
@@ -30,7 +32,8 @@ class UserInterface(QtCore.QObject):
         self.longitude = ""
         self.latitude = ""
         self.elevation = ""
-        
+        self.file = False
+
         self.station = None 
         self.scheduler = Scheduler()
 
@@ -325,12 +328,13 @@ class UserInterface(QtCore.QObject):
         if file_name:
             self.ui.file_type_label.setText(os.path.basename(file_name))
             self.updateDecodeButton()
+            self.file = True
             self.filepath = file_name
             self.ui.play_audio_button.setEnabled(True)
 
     @QtCore.Slot()
     def updateDecodeButton(self):
-        if any(checkbox.isChecked() for checkbox in self.checkboxes):
+        if any(checkbox.isChecked() for checkbox in self.checkboxes) and self.ui.sat_input.text() and self.file:
             self.ui.decode_button.setEnabled(True)
         else:
             self.ui.decode_button.setEnabled(False)
@@ -482,10 +486,28 @@ class UserInterface(QtCore.QObject):
             self.ui.settings_page.setEnabled(True)
 
     def decodeImage(self):
-        image = os.path.join(os.getcwd(), "images/NOAA15/test15.png")
+        apt = APT(self.filepath)
+        if self.localpath != "":
+            temp = functions.checkDirs(self.localpath)
+            path = os.path.join(self.localpath, "images")
+        else:
+            temp = functions.checkDirs(os.getcwd())
+            path = os.path.join(os.getcwd(), "images")
+        current = datetime.now()
+        currentString = current.strftime("%m-%d-%Y %H_%M_%S")+ ".png"
+
+        if self.ui.sat_input.text().upper() in temp:
+            apt.decode(self.ui.decode_progress_bar, os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString))
+        else:
+            os.mkdir(os.path.join(path, self.ui.sat_input.text().upper()))
+            apt.decode(self.ui.decode_progress_bar, os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString))
+
+        
+        image = os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString)
         pixmage = QPixmap(image)
         self.ui.image_label.setPixmap(pixmage)
         self.ui.image_label.setScaledContents(True)
+        self.ui.decode_progress_bar.setValue(100)
 
     def show(self):
         self.ui.show()
