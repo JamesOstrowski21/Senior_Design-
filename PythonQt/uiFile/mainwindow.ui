@@ -57,6 +57,34 @@ QLabel#application_title {
     padding: 3px; /* Add some padding around the text */
     background-color: #121212; /* Set the background color to white */
 }
+QLabel#station_label {
+    font-size: 24px; /* Set the font size to 24 pixels */
+    font-weight: bold; /* Make the font bold */
+    color: #607cff; /* Set the text color to a dark shade of gray */
+    padding: 3px; /* Add some padding around the text */
+    background-color: #121212; /* Set the background color to white */
+}
+QLabel#range_label{
+    font-size: 24px; /* Set the font size to 24 pixels */
+    font-weight: bold; /* Make the font bold */
+    color: #607cff; /* Set the text color to a dark shade of gray */
+    padding: 3px; /* Add some padding around the text */
+    background-color: #121212; /* Set the background color to white */
+}
+QLabel#scheduled_passes_label {
+    font-size: 24px; /* Set the font size to 24 pixels */
+    font-weight: bold; /* Make the font bold */
+    color: #607cff; /* Set the text color to a dark shade of gray */
+    padding: 3px; /* Add some padding around the text */
+    background-color: #121212; /* Set the background color to white */
+}
+QLabel#predict_satellite_label {
+    font-size: 24px; /* Set the font size to 24 pixels */
+    font-weight: bold; /* Make the font bold */
+    color: #607cff; /* Set the text color to a dark shade of gray */
+    padding: 3px; /* Add some padding around the text */
+    background-color: #121212; /* Set the background color to white */
+}
 QLabel#post_processing_label {
     color: #607cff; /* Set the text color to a dark shade of gray */
 }
@@ -1296,7 +1324,7 @@ QStatusBar
          </size>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="decode_page">
          <attribute name="title">
@@ -1329,7 +1357,7 @@ QStatusBar
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <layout class="QVBoxLayout" name="verticalLayout_14">
            <item>
             <widget class="QFrame" name="import_frame">
              <property name="minimumSize">
@@ -1468,6 +1496,59 @@ QStatusBar
             </widget>
            </item>
            <item>
+            <widget class="QFrame" name="name_frame">
+             <property name="minimumSize">
+              <size>
+               <width>240</width>
+               <height>45</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>240</width>
+               <height>45</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_13">
+              <item>
+               <widget class="QLabel" name="sat_label">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string> Satellite Name</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="sat_input">
+                <property name="minimumSize">
+                 <size>
+                  <width>110</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>110</width>
+                  <height>25</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="QFrame" name="decode_button_frame">
              <property name="minimumSize">
               <size>
@@ -1511,11 +1592,54 @@ QStatusBar
             </widget>
            </item>
            <item>
+            <widget class="QFrame" name="decode_progress">
+             <property name="minimumSize">
+              <size>
+               <width>240</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QProgressBar" name="decode_progress_bar">
+                <property name="minimumSize">
+                 <size>
+                  <width>200</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="value">
+                 <number>0</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="QFrame" name="post_processing_frame">
              <property name="minimumSize">
               <size>
                <width>240</width>
-               <height>310</height>
+               <height>200</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>240</width>
+               <height>200</height>
               </size>
              </property>
              <property name="frameShape">
@@ -1558,14 +1682,14 @@ QStatusBar
                <widget class="QFrame" name="processing_checkbox_frame">
                 <property name="minimumSize">
                  <size>
-                  <width>240</width>
-                  <height>200</height>
+                  <width>220</width>
+                  <height>140</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
+                  <width>220</width>
+                  <height>140</height>
                  </size>
                 </property>
                 <property name="frameShape">
@@ -1689,11 +1813,23 @@ QStatusBar
          <widget class="QFrame" name="predict_frame">
           <property name="geometry">
            <rect>
-            <x>19</x>
-            <y>119</y>
-            <width>241</width>
-            <height>441</height>
+            <x>10</x>
+            <y>120</y>
+            <width>240</width>
+            <height>440</height>
            </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>240</width>
+            <height>440</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>240</width>
+            <height>440</height>
+           </size>
           </property>
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
@@ -1701,92 +1837,293 @@ QStatusBar
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <widget class="QLineEdit" name="lineEdit_4">
-           <property name="geometry">
-            <rect>
-             <x>2</x>
-             <y>0</y>
-             <width>231</width>
-             <height>61</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Satellites</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="predict_button">
-           <property name="geometry">
-            <rect>
-             <x>20</x>
-             <y>170</y>
-             <width>191</width>
-             <height>41</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Predict</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="schedule_button">
-           <property name="geometry">
-            <rect>
-             <x>2</x>
-             <y>361</y>
-             <width>231</width>
-             <height>71</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Schedule Pass</string>
-           </property>
-          </widget>
-          <widget class="QListWidget" name="satellite_list">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>70</y>
-             <width>231</width>
-             <height>91</height>
-            </rect>
-           </property>
+          <layout class="QVBoxLayout" name="verticalLayout_13">
            <item>
-            <property name="text">
-             <string>Satellite 1</string>
-            </property>
+            <widget class="QLabel" name="predict_satellite_label">
+             <property name="minimumSize">
+              <size>
+               <width>230</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>230</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Satellites</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
            </item>
            <item>
-            <property name="text">
-             <string>Satellite 2</string>
-            </property>
+            <widget class="QFrame" name="satellite_option_frame">
+             <property name="minimumSize">
+              <size>
+               <width>230</width>
+               <height>80</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>230</width>
+               <height>80</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_9">
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QCheckBox" name="NOAA15_checkbox">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>NOAA15</string>
+                </property>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QCheckBox" name="NOAA18_checkbox">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>NOAA18</string>
+                </property>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QCheckBox" name="NOAA19_checkbox">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>NOAA19</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
            <item>
-            <property name="text">
-             <string>Satellite 3</string>
-            </property>
+            <widget class="QFrame" name="timeframe_frame">
+             <property name="minimumSize">
+              <size>
+               <width>230</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>230</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_12">
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QLabel" name="range_label">
+                <property name="text">
+                 <string>Timeframe</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QFrame" name="range_box_frame">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout">
+                 <item row="0" column="0">
+                  <widget class="QComboBox" name="ranges">
+                   <property name="minimumSize">
+                    <size>
+                     <width>75</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>75</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>1 Day</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>2 Days</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>3 Days</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
            <item>
-            <property name="text">
-             <string>Satellite 4</string>
-            </property>
+            <widget class="QFrame" name="predict_button_frame">
+             <property name="minimumSize">
+              <size>
+               <width>230</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>230</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_10">
+              <item alignment="Qt::AlignHCenter|Qt::AlignTop">
+               <widget class="QPushButton" name="predict_button">
+                <property name="minimumSize">
+                 <size>
+                  <width>150</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>150</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Predict</string>
+                </property>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QProgressBar" name="predict_progress">
+                <property name="minimumSize">
+                 <size>
+                  <width>200</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="value">
+                 <number>0</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
            <item>
-            <property name="text">
-             <string>Satellite 5</string>
-            </property>
+            <widget class="QFrame" name="schedule_passes_frame">
+             <property name="minimumSize">
+              <size>
+               <width>230</width>
+               <height>80</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>230</width>
+               <height>180</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_11">
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QPushButton" name="schedule_button">
+                <property name="minimumSize">
+                 <size>
+                  <width>200</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Schedule Passes</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
-          </widget>
+          </layout>
          </widget>
          <widget class="QFrame" name="station_frame">
           <property name="geometry">
            <rect>
             <x>20</x>
             <y>20</y>
-            <width>1131</width>
-            <height>81</height>
+            <width>1120</width>
+            <height>80</height>
            </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>1120</width>
+            <height>80</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>1120</width>
+            <height>80</height>
+           </size>
           </property>
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
@@ -1794,67 +2131,180 @@ QStatusBar
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <widget class="QPushButton" name="station_button">
-           <property name="geometry">
-            <rect>
-             <x>30</x>
-             <y>20</y>
-             <width>171</width>
-             <height>41</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Ground Station</string>
-           </property>
-          </widget>
-          <widget class="QLineEdit" name="latitude">
-           <property name="geometry">
-            <rect>
-             <x>270</x>
-             <y>30</y>
-             <width>113</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Latitude: </string>
-           </property>
-          </widget>
-          <widget class="QLineEdit" name="longitude">
-           <property name="geometry">
-            <rect>
-             <x>410</x>
-             <y>30</y>
-             <width>113</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Longitude: </string>
-           </property>
-          </widget>
-          <widget class="QLineEdit" name="elevation">
-           <property name="geometry">
-            <rect>
-             <x>550</x>
-             <y>30</y>
-             <width>113</width>
-             <height>21</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Elevation: </string>
-           </property>
-          </widget>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item alignment="Qt::AlignVCenter">
+            <widget class="QLabel" name="station_label">
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>200</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Ground Station</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="latitude_label">
+             <property name="minimumSize">
+              <size>
+               <width>70</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>70</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Latitude:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="latitude">
+             <property name="minimumSize">
+              <size>
+               <width>115</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>115</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="longitude_label">
+             <property name="minimumSize">
+              <size>
+               <width>70</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>70</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Longitude:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="longitude">
+             <property name="minimumSize">
+              <size>
+               <width>115</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>115</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="elevation_label">
+             <property name="minimumSize">
+              <size>
+               <width>70</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>70</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Elevation:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="elevation">
+             <property name="minimumSize">
+              <size>
+               <width>115</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>115</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
          <widget class="QFrame" name="schedule_frame">
           <property name="geometry">
            <rect>
             <x>270</x>
             <y>120</y>
-            <width>881</width>
-            <height>231</height>
+            <width>890</width>
+            <height>230</height>
            </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>890</width>
+            <height>230</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>890</width>
+            <height>230</height>
+           </size>
           </property>
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
@@ -1862,61 +2312,40 @@ QStatusBar
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <widget class="QTableWidget" name="tableWidget">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
+          <widget class="QTableWidget" name="predicted_passes">
            <property name="geometry">
             <rect>
-             <x>0</x>
+             <x>140</x>
              <y>0</y>
-             <width>881</width>
-             <height>231</height>
+             <width>675</width>
+             <height>230</height>
             </rect>
            </property>
-           <row>
-            <property name="text">
-             <string>1</string>
-            </property>
-           </row>
-           <row>
-            <property name="text">
-             <string>2</string>
-            </property>
-           </row>
-           <row>
-            <property name="text">
-             <string>3</string>
-            </property>
-           </row>
-           <row>
-            <property name="text">
-             <string>4</string>
-            </property>
-           </row>
-           <row>
-            <property name="text">
-             <string>5</string>
-            </property>
-           </row>
+           <property name="minimumSize">
+            <size>
+             <width>675</width>
+             <height>230</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>675</width>
+             <height>230</height>
+            </size>
+           </property>
            <column>
             <property name="text">
-             <string>Sat</string>
+             <string>Satellite</string>
             </property>
            </column>
            <column>
             <property name="text">
-             <string>New Column</string>
+             <string>Start Time</string>
             </property>
            </column>
            <column>
             <property name="text">
-             <string>Start</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Stop</string>
+             <string>End Time</string>
             </property>
            </column>
            <column>
@@ -1926,7 +2355,12 @@ QStatusBar
            </column>
            <column>
             <property name="text">
-             <string>Pointing</string>
+             <string>Quality</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Plot</string>
             </property>
            </column>
           </widget>
@@ -1936,9 +2370,21 @@ QStatusBar
            <rect>
             <x>269</x>
             <y>369</y>
-            <width>891</width>
-            <height>191</height>
+            <width>890</width>
+            <height>190</height>
            </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>890</width>
+            <height>190</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>890</width>
+            <height>190</height>
+           </size>
           </property>
           <property name="frameShape">
            <enum>QFrame::StyledPanel</enum>
@@ -1946,60 +2392,43 @@ QStatusBar
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <widget class="QListWidget" name="satellite_list_2">
-           <property name="geometry">
-            <rect>
-             <x>190</x>
-             <y>10</y>
-             <width>691</width>
-             <height>161</height>
-            </rect>
-           </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_12">
            <item>
-            <property name="text">
-             <string>Pass 1</string>
-            </property>
+            <widget class="QLabel" name="scheduled_passes_label">
+             <property name="minimumSize">
+              <size>
+               <width>230</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>200</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Scheduled Passes</string>
+             </property>
+            </widget>
            </item>
            <item>
-            <property name="text">
-             <string>Pass 2</string>
-            </property>
+            <widget class="QTextEdit" name="scheduled_passes_edit">
+             <property name="minimumSize">
+              <size>
+               <width>600</width>
+               <height>180</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>600</width>
+               <height>180</height>
+              </size>
+             </property>
+            </widget>
            </item>
-           <item>
-            <property name="text">
-             <string>Pass 3</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Pass 4</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Pass 5</string>
-            </property>
-           </item>
-          </widget>
-          <widget class="QLineEdit" name="lineEdit">
-           <property name="geometry">
-            <rect>
-             <x>2</x>
-             <y>0</y>
-             <width>181</width>
-             <height>181</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Scheduled Passes</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
+          </layout>
          </widget>
         </widget>
         <widget class="QWidget" name="images_page">
