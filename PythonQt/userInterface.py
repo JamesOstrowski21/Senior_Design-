@@ -124,6 +124,20 @@ class UserInterface(QtCore.QObject):
         self.timer_duration = 20000
         self.current_duration = 0
 
+    def stars(self, quality):
+        if quality >= 0 and quality <= self.scheduler.quality_thres:
+            return "☆☆☆☆☆"  # 0 stars
+        elif quality > self.scheduler.quality_thres and quality <= self.scheduler.quality_thres + 0.1:
+            return "★☆☆☆☆"  # 1 star
+        elif quality > self.scheduler.quality_thres + 0.1 and quality <= self.scheduler.quality_thres + 0.2:
+            return "★★☆☆☆"  # 2 stars
+        elif quality > self.scheduler.quality_thres + 0.2 and quality <= self.scheduler.quality_thres + 0.25:
+            return "★★★☆☆"  # 3 stars
+        elif quality > self.scheduler.quality_thres + 0.25 and quality <= self.scheduler.quality_thres + 0.4:
+            return "★★★★☆"  # 4 stars
+        elif quality > self.scheduler.quality_thres + 0.4:
+            return "★★★★★"  # 5 stars
+    
     def startPedictProgress(self):
         self.timer.start(self.timer_interval)
         self.current_duration = 0
@@ -193,7 +207,7 @@ class UserInterface(QtCore.QObject):
             data = [_pass.satellite, 
                     utc_to_local(_pass.start_time).strftime('%m-%d-%Y %H:%M:%S'), 
                     utc_to_local(_pass.end_time).strftime('%m-%d-%Y %H:%M:%S'), 
-                    duration, quality]
+                    duration, self.stars(float(quality))]
             
             for column, value in enumerate(data):
                 item = QtWidgets.QTableWidgetItem(value)
