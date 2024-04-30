@@ -13,6 +13,8 @@ import functions
 from intelliTrack.schedule_passes import Scheduler 
 from intelliTrack.intelliTrack.compute_passes import make_station as makeStation, utc_to_local
 from beyond.dates import timedelta
+from apt import APT
+from datetime import datetime
 
 loader = QUiLoader()
 
@@ -30,7 +32,8 @@ class UserInterface(QtCore.QObject):
         self.longitude = ""
         self.latitude = ""
         self.elevation = ""
-        
+        self.file = False
+
         self.station = None 
         self.scheduler = Scheduler()
 
@@ -107,9 +110,21 @@ class UserInterface(QtCore.QObject):
         self.ui.latitude.textChanged.connect(self.updatePredictButton)
         self.ui.longitude.textChanged.connect(self.updatePredictButton)
         self.ui.elevation.textChanged.connect(self.updatePredictButton)
-        
+
+        self.ui.predicted_passes.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.ui.predicted_passes.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectItems)
+        self.ui.predicted_passes.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.ui.schedule_button.clicked.connect(self.schedulePasses)
+        self.ui.scheduled_passes_edit.setReadOnly(True)
+        self.updateScheduledPasses()
+
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.updatePredictProgress)
+        self.timer_interval = 1000
+        self.timer_duration = 20000
+        self.current_duration = 0
+
     def stars(self, quality):
-        
         if quality >= 0 and quality <= self.scheduler.quality_thres:
             return "☆☆☆☆☆"  # 0 stars
         elif quality > self.scheduler.quality_thres and quality <= self.scheduler.quality_thres + 0.1:
@@ -122,12 +137,38 @@ class UserInterface(QtCore.QObject):
             return "★★★★☆"  # 4 stars
         elif quality > self.scheduler.quality_thres + 0.4:
             return "★★★★★"  # 5 stars
+    
+    def startPedictProgress(self):
+        self.timer.start(self.timer_interval)
+        self.current_duration = 0
+    
+    def updatePredictProgress(self):
+        if self.current_duration < self.timer_duration:
+            self.current_duration += self.timer_interval
+            self.ui.predict_progress.setValue(int((self.current_duration/self.timer_duration)*100))
+        else:
+            self.timer.stop()
+            self.ui.predict_progress.setValue(99)
+    
+    def schedulePasses(self):
+        selectedIndexes = self.ui.predicted_passes.selectedIndexes()
+        selectedRows = set([index.row() for index in selectedIndexes])
+
+        for row in selectedRows:
+            rowData = [self.ui.predicted_passes.item(row, column).text() for column in range(4)]
+            rowText = "\t".join(rowData)+"\n"
+            functions.updateScheduledPasses(rowText)
         
-    def copyTableInformation(self, pos):
-        item = self.ui.predicted_passes.itemAt(pos)
-        if item is not None:
-            self.ui.predicted_passes.copy()
-            
+        self.updateScheduledPasses()
+
+    def updateScheduledPasses(self):
+        self.ui.scheduled_passes_edit.clear()
+        functions.removePreviousPasses()
+        selectedData = functions.readScheduledPasses()
+        for line in selectedData:
+            self.ui.scheduled_passes_edit.append(line)
+
+
     def predictPasses(self):
         self.longitude = self.ui.longitude.text()
         self.latitude = self.ui.latitude.text()
@@ -304,12 +345,13 @@ class UserInterface(QtCore.QObject):
         if file_name:
             self.ui.file_type_label.setText(os.path.basename(file_name))
             self.updateDecodeButton()
+            self.file = True
             self.filepath = file_name
             self.ui.play_audio_button.setEnabled(True)
 
     @QtCore.Slot()
     def updateDecodeButton(self):
-        if any(checkbox.isChecked() for checkbox in self.checkboxes):
+        if any(checkbox.isChecked() for checkbox in self.checkboxes) and self.ui.sat_input.text() and self.file:
             self.ui.decode_button.setEnabled(True)
         else:
             self.ui.decode_button.setEnabled(False)
@@ -461,10 +503,28 @@ class UserInterface(QtCore.QObject):
             self.ui.settings_page.setEnabled(True)
 
     def decodeImage(self):
-        image = os.path.join(os.getcwd(), "images/NOAA15/test15.png")
+        apt = APT(self.filepath)
+        if self.localpath != "":
+            temp = functions.checkDirs(self.localpath)
+            path = os.path.join(self.localpath, "images")
+        else:
+            temp = functions.checkDirs(os.getcwd())
+            path = os.path.join(os.getcwd(), "images")
+        current = datetime.now()
+        currentString = current.strftime("%m-%d-%Y %H_%M_%S")+ ".png"
+
+        if self.ui.sat_input.text().upper() in temp:
+            apt.decode(self.ui.decode_progress_bar, os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString))
+        else:
+            os.mkdir(os.path.join(path, self.ui.sat_input.text().upper()))
+            apt.decode(self.ui.decode_progress_bar, os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString))
+
+        
+        image = os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString)
         pixmage = QPixmap(image)
         self.ui.image_label.setPixmap(pixmage)
         self.ui.image_label.setScaledContents(True)
+        self.ui.decode_progress_bar.setValue(100)
 
     def show(self):
         self.ui.show()

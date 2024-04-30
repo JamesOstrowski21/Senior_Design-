@@ -12,7 +12,6 @@ def ftp_connect(host, user, passwd, filepath, folder, localpath):
 
     for filename in fileList:
         if filename.endswith(".png"):
-            print(filename)
             localpath = os.path.join(localpath, "images", folder, filename)
 
             if not os.path.exists(localpath):
@@ -22,9 +21,9 @@ def ftp_connect(host, user, passwd, filepath, folder, localpath):
     ftp.quit()
 
 def makeDirs():
-    os.makedirs(os.path.join(os.getcwd(),"images", "NOAA 15"), exist_ok=True)
-    os.makedirs(os.path.join(os.getcwd(),"images", "NOAA 18"), exist_ok=True)
-    os.makedirs(os.path.join(os.getcwd(),"images", "NOAA 19"), exist_ok=True)
+    os.makedirs(os.path.join(os.getcwd(),"images", "NOAA15"), exist_ok=True)
+    os.makedirs(os.path.join(os.getcwd(),"images", "NOAA18"), exist_ok=True)
+    os.makedirs(os.path.join(os.getcwd(),"images", "NOAA19"), exist_ok=True)
 
 def makeFiles():
     path = os.path.join(os.getcwd(), "scheduledPasses.txt")
@@ -136,3 +135,11 @@ def checkInternetConnection():
         return True
     except requests.ConnectionError:
         return False
+
+def checkDirs(directory):
+    contents = os.listdir(os.path.join(directory, "images"))
+    
+    # Filter out only the directories
+    subdirectories = [item for item in contents if os.path.isdir(os.path.join(os.path.join(directory, "images"), item))]
+    
+    return subdirectories
