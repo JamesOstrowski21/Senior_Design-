@@ -5,11 +5,10 @@ import sys
 from PIL import Image
 
 class APT(object):
-
     RATE = 20800
     NOAA_LINE_LENGTH = 2080
 
-    def __init__(self, filename):
+    def __init__(self, filename, channel_crop=None):
         (rate, self.signal) = scipy.io.wavfile.read(filename)
         if rate != self.RATE:
             raise Exception("Resample audio file to {}".format(self.RATE))
@@ -19,7 +18,11 @@ class APT(object):
             left = self.signal[:, 0]
             right = self.signal[:, 1]
             self.signal = right #(left + right) / 2
-
+        
+        self.performChannelCrop = False
+        if channel_crop is not None:
+            self.performChannelCrop = True
+            
         truncate = self.RATE * int(len(self.signal) // self.RATE)
         self.signal = self.signal[:truncate]
 
@@ -35,9 +38,12 @@ class APT(object):
         matrix = self._reshape(digitized)
         ui.setValue(ui.value()+16)
         image = Image.fromarray(matrix)
+        
         ui.setValue(ui.value()+16)
         if not outfile is None:
             image.save(outfile)
+            if self.performChannelCrop: 
+                self.channelCropper.crop(image, outfile)
         #image.show()
         
         return matrix
@@ -95,7 +101,32 @@ class APT(object):
             matrix.append(signal[peaks[i][0] : peaks[i][0] + 2080])
 
         return np.array(matrix)
+    
+    def channelCropper(self, image, outfile):
+        #These were shamelessly taken from aptdec
+        APT_SYNC_WIDTH = 39
+        APT_SPC_WIDTH = 47
+        APT_TELE_WIDTH = 45
+        APT_FRAME_LEN = 128
+        APT_CH_WIDTH = 909
+        
+        i = image
+        xsize,ysize = i.size
+        cha = Image.new('RGB', (APT_CH_WIDTH,ysize))
+        chb = Image.new('RGB', (APT_CH_WIDTH,ysize))
+        (left, upper, right, lower) = (APT_SYNC_WIDTH+APT_SPC_WIDTH, 1,APT_SYNC_WIDTH+APT_SPC_WIDTH+APT_CH_WIDTH-10,ysize)
+        cha = i.crop((left, upper, right, lower))
+        
+        (left, upper, right, lower) = (APT_SYNC_WIDTH+APT_SPC_WIDTH+APT_CH_WIDTH+APT_SYNC_WIDTH+APT_SPC_WIDTH+APT_TELE_WIDTH, 1,APT_SYNC_WIDTH+APT_SPC_WIDTH+APT_CH_WIDTH+APT_SYNC_WIDTH+APT_SPC_WIDTH+APT_CH_WIDTH+10,ysize)
 
+        chb = i.crop((left, upper, right, lower))
+
+        cha = cha.resize((909,ysize), Image.LANCZOS)
+        chb = chb.resize((909,ysize), Image.LANCZOS)
+        outfile = outfile.split(".")[0]
+        
+        cha.save(f"{outfile}_cha.png")
+        chb.save(f"{outfile}_chb.png")
 
 if __name__ == '__main__':
     apt = APT(sys.argv[1])

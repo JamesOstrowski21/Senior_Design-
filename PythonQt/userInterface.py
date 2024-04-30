@@ -15,6 +15,7 @@ from intelliTrack.intelliTrack.compute_passes import make_station as makeStation
 from beyond.dates import timedelta
 from apt import APT
 from datetime import datetime
+from PIL import Image
 
 loader = QUiLoader()
 
@@ -504,12 +505,14 @@ class UserInterface(QtCore.QObject):
 
     def decodeImage(self):
         apt = APT(self.filepath)
+        
         if self.localpath != "":
             temp = functions.checkDirs(self.localpath)
             path = os.path.join(self.localpath, "images")
         else:
             temp = functions.checkDirs(os.getcwd())
             path = os.path.join(os.getcwd(), "images")
+            
         current = datetime.now()
         currentString = current.strftime("%m-%d-%Y %H_%M_%S")+ ".png"
 
@@ -519,7 +522,6 @@ class UserInterface(QtCore.QObject):
             os.mkdir(os.path.join(path, self.ui.sat_input.text().upper()))
             apt.decode(self.ui.decode_progress_bar, os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString))
 
-        
         image = os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString)
         pixmage = QPixmap(image)
         self.ui.image_label.setPixmap(pixmage)
