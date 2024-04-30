@@ -10,6 +10,7 @@ import time
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import functions
+from resample import resample
 from intelliTrack.schedule_passes import Scheduler 
 from intelliTrack.intelliTrack.compute_passes import make_station as makeStation, utc_to_local
 from beyond.dates import timedelta
@@ -343,7 +344,8 @@ class UserInterface(QtCore.QObject):
             self.ui.file_type_label.setText(os.path.basename(file_name))
             self.updateDecodeButton()
             self.file = True
-            self.filepath = file_name
+            output = resample(file_name, file_name)
+            self.filepath = output
             self.ui.play_audio_button.setEnabled(True)
 
     @QtCore.Slot()
@@ -363,6 +365,10 @@ class UserInterface(QtCore.QObject):
         elif self.ui.checkbox_none.isChecked() == False:
             self.ui.checkbox_2.setEnabled(True)
             self.ui.checkbox_3.setEnabled(True)
+        elif self.ui.checkbox_2.isChecked():
+            self.ui.checkbox_3.setChecked(False)
+        elif self.ui.checkbox_3.isChecked():
+            self.ui.checkbox_2.setChecked(False)
 
 
     def playAudio(self, file_path):
@@ -500,6 +506,8 @@ class UserInterface(QtCore.QObject):
             self.ui.settings_page.setEnabled(True)
 
     def decodeImage(self):
+        self.ui.decode_progress_bar.setValue(0)
+        self.ui.decode_progress_bar.setFormat("0%")
         apt = APT(self.filepath)
         if self.localpath != "":
             temp = functions.checkDirs(self.localpath)
@@ -509,19 +517,30 @@ class UserInterface(QtCore.QObject):
             path = os.path.join(os.getcwd(), "images")
         current = datetime.now()
         currentString = current.strftime("%m-%d-%Y %H_%M_%S")+ ".png"
-
+        if self.ui.checkbox_2.isChecked():
+            channel = "A"
+        elif self.ui.checkbox_3.isChecked():
+            channel = "B"
+        elif self.ui.checkbox_none.isChecked():
+            channel = "None"
         if self.ui.sat_input.text().upper() in temp:
-            apt.decode(self.ui.decode_progress_bar, os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString))
+            apt.decode(self.ui.decode_progress_bar, channel, os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString))
         else:
             os.mkdir(os.path.join(path, self.ui.sat_input.text().upper()))
-            apt.decode(self.ui.decode_progress_bar, os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString))
+            apt.decode(self.ui.decode_progress_bar, channel, os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString))
 
         
         image = os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString)
         pixmage = QPixmap(image)
-        self.ui.image_label.setPixmap(pixmage)
-        self.ui.image_label.setScaledContents(True)
+        if channel == "A" or channel == "B":
+            pixmage = pixmage.scaled(640, 570, QtCore.Qt.KeepAspectRatio)
+            self.ui.image_label.setPixmap(pixmage)
+            self.ui.image_label.setAlignment(QtCore.Qt.AlignCenter)
+        else:
+            self.ui.image_label.setPixmap(pixmage)
+            self.ui.image_label.setScaledContents(True)
         self.ui.decode_progress_bar.setValue(100)
+        self.ui.decode_progress_bar.setFormat("Decoding Complete")
 
     def show(self):
         self.ui.show()
