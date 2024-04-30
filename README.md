@@ -1,7 +1,6 @@
 # intelliTrack-Qt
 This is an application to support intelliTrack. We are building a system system capable of seamlessly acquiring, processing, and analyzing satellite imagery from various orbits, including low earth, geosynchronous, and polar orbits. This application is built using PySide6 a python binding for the Qt C++ Framework. 
 
-
 ## Usage Instructions
 Ensure you have at least python 3.10 installed, and install the required dependencies with your favorite package manager. 
 `pip install -r requirements.txt`
@@ -34,11 +33,14 @@ In this page you can view all the images that have been decoded with IntelliTrac
 
 ## Settings Page 
 
-Here is where you can connect to your raspberry pi for automous recording of passes. This is still in development.
+Here is where you can connect to your raspberry pi for automous recording of passes. Ensure that your pi is connected to the same network, and that you know its IP address, and login information for a secure ssh connection. 
 
+Once connected you can send commands directly to the pi using the embedded interface. 
+The scheduling on the pi can be done via the command line, or by using the `crontab` command.
 
 # Development/Contribution
 Below are some useful steps to start working on this repository
+
 ## Qt Information
 This is an open source framwork capable of building full stack desktop applications. 
 [Qt Download](https://www.qt.io/download-open-source) 
