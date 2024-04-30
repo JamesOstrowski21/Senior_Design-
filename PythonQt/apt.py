@@ -26,20 +26,28 @@ class APT(object):
         truncate = self.RATE * int(len(self.signal) // self.RATE)
         self.signal = self.signal[:truncate]
 
-    def decode(self, ui, outfile=None):
+    def decode(self, ui, channel, outfile=None):
+        ui.setFormat("Enveloping...")
         hilbert = scipy.signal.hilbert(self.signal) # envoloping 
         ui.setValue(ui.value()+16)
+        ui.setFormat("Filtering...")
         filtered = scipy.signal.medfilt(np.abs(hilbert), 5)
         ui.setValue(ui.value()+16)
+        ui.setFormat("Reshaping...")
         reshaped = filtered.reshape(len(filtered) // 5, 5)
         ui.setValue(ui.value()+16)
+        ui.setFormat("Digitizing...")   
         digitized = self._digitize(reshaped[:, 2]) 
-        ui.setValue(ui.value()+16)       
+        ui.setValue(ui.value()+16)
+        ui.setFormat("Reshaping...")
         matrix = self._reshape(digitized)
         ui.setValue(ui.value()+16)
+        ui.setFormat("Creating image...")
         image = Image.fromarray(matrix)
         
         ui.setValue(ui.value()+16)
+
+        width, height = image.size
         if not outfile is None:
             image.save(outfile)
             if self.performChannelCrop: 
