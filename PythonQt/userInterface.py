@@ -47,7 +47,7 @@ class UserInterface(QtCore.QObject):
         self.ui.audio_slider.setValue(50)
         self.ui.audio_slider.valueChanged.connect(self.setVolume)
         
-        self.checkboxes = [self.ui.checkbox_2, self.ui.checkbox_3, self.ui.checkbox_none]
+        self.checkboxes = [self.ui.checkbox_2, self.ui.checkbox_none]
         for checkbox in self.checkboxes:
             checkbox.stateChanged.connect(self.updateDecodeButton)
         
@@ -359,16 +359,9 @@ class UserInterface(QtCore.QObject):
     def updateBoxes(self):
         if self.ui.checkbox_none.isChecked():
             self.ui.checkbox_2.setEnabled(False)
-            self.ui.checkbox_3.setEnabled(False)
             self.ui.checkbox_2.setChecked(False)
-            self.ui.checkbox_3.setChecked(False)
         elif self.ui.checkbox_none.isChecked() == False:
             self.ui.checkbox_2.setEnabled(True)
-            self.ui.checkbox_3.setEnabled(True)
-        elif self.ui.checkbox_2.isChecked():
-            self.ui.checkbox_3.setChecked(False)
-        elif self.ui.checkbox_3.isChecked():
-            self.ui.checkbox_2.setChecked(False)
 
 
     def playAudio(self, file_path):
@@ -519,10 +512,9 @@ class UserInterface(QtCore.QObject):
         currentString = current.strftime("%m-%d-%Y %H_%M_%S")+ ".png"
         if self.ui.checkbox_2.isChecked():
             channel = "A"
-        elif self.ui.checkbox_3.isChecked():
-            channel = "B"
         elif self.ui.checkbox_none.isChecked():
             channel = "None"
+
         if self.ui.sat_input.text().upper() in temp:
             apt.decode(self.ui.decode_progress_bar, channel, os.path.join(path, self.ui.sat_input.text().upper(), self.ui.sat_input.text() + currentString))
         else:
