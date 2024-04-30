@@ -1708,20 +1708,7 @@ QStatusBar
                     </font>
                    </property>
                    <property name="text">
-                    <string>Channel A</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="checkbox_3">
-                   <property name="font">
-                    <font>
-                     <pointsize>10</pointsize>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Channel B</string>
+                    <string>Crop Channels</string>
                    </property>
                   </widget>
                  </item>
