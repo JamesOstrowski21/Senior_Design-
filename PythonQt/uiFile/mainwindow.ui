@@ -1588,24 +1588,6 @@ QStatusBar
                 </property>
                </widget>
               </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QFrame" name="decode_progress">
-             <property name="minimumSize">
-              <size>
-               <width>240</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_3">
               <item alignment="Qt::AlignHCenter">
                <widget class="QProgressBar" name="decode_progress_bar">
                 <property name="minimumSize">
@@ -1938,47 +1920,35 @@ QStatusBar
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QFrame" name="range_box_frame">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
+              <item alignment="Qt::AlignHCenter|Qt::AlignBottom">
+               <widget class="QComboBox" name="ranges">
+                <property name="minimumSize">
+                 <size>
+                  <width>75</width>
+                  <height>25</height>
+                 </size>
                 </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
+                <property name="maximumSize">
+                 <size>
+                  <width>75</width>
+                  <height>20</height>
+                 </size>
                 </property>
-                <layout class="QGridLayout" name="gridLayout">
-                 <item row="0" column="0">
-                  <widget class="QComboBox" name="ranges">
-                   <property name="minimumSize">
-                    <size>
-                     <width>75</width>
-                     <height>25</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>75</width>
-                     <height>25</height>
-                    </size>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>1 Day</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>2 Days</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>3 Days</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                </layout>
+                <item>
+                 <property name="text">
+                  <string>1 Day</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>2 Days</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>3 Days</string>
+                 </property>
+                </item>
                </widget>
               </item>
              </layout>
@@ -2615,7 +2585,7 @@ QStatusBar
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>65</width>
+                  <width>75</width>
                   <height>18</height>
                  </size>
                 </property>
@@ -2932,7 +2902,7 @@ QStatusBar
              </property>
              <property name="maximumSize">
               <size>
-               <width>75</width>
+               <width>100</width>
                <height>30</height>
               </size>
              </property>
@@ -2972,7 +2942,7 @@ QStatusBar
              </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>125</width>
                <height>30</height>
               </size>
              </property>
@@ -2996,7 +2966,7 @@ QStatusBar
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
