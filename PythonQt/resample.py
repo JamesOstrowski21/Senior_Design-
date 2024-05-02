@@ -6,7 +6,7 @@ import os
 RATE = 20800
 
 
-def resample(in_filename, out_filename ):
+def resample(in_filename, out_filename):
     (rate, signal) = scipy.io.wavfile.read(in_filename)
     directory, base = os.path.split(in_filename)
     outputPath = os.path.join(directory, f"{os.path.splitext(base)[0]}_resampled.wav")
