@@ -8,10 +8,11 @@ Ensure you have at least python 3.10 installed, and install the required depende
 ## Running the Application
 Currently this application is run via the main.py script, but in the future there will be a full release package available to be integrated for macos, linux, and windows. 
 
-run with `python pythonQT/main.py` 
+Change you working directory to the PythonQt folder `cd PythonQt` then
+run with `python main.py` 
 
 ## Decode Page 
-The decode page is used to decode the APT information recorded and saved in a .wav format. The decoding algorihtm with resample you input waveforms to 22050Hz then perform the decoding algorithm. 
+The decode page is used to decode the APT information recorded and saved in a .wav format. The decoding algorihtm will resample your input waveforms to 22050Hz then perform the decoding algorithm. 
 
 You can select the file you want to decode by clicking the "Select File" button. Then name your output image in the textbox provided. 
 
