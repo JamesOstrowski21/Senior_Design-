@@ -1,3 +1,5 @@
+.ds_store
+
 PythonQt/__pycache__
 PythonQt/images/
 PythonQt/config.txt
@@ -7,3 +9,4 @@ PythonQt/logs/*
 PythonQt/scheduledPasses.txt
 PythonQt/deployment/
 PythonQt/pysidedeploy.spec
+logs/*
